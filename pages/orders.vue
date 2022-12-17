@@ -11,13 +11,14 @@
                         <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Orders ✨</h1>
                     </div>
 
+                    <OrdersActions class="mr-20" @filter-url="filter"></OrdersActions>
                     <!-- Right: Actions -->
                     <!-- <%= require('html-loader!./partials/table-actions.html') %> -->
 
                 </div>
-                <OrdersTable :orderbatches="orderBatches"></OrdersTable>
+                <OrdersTable :orderbatches="orderBatches" ></OrdersTable>
                 <!-- <%= require('html-loader!./partials/orders/orders-table.html') %> -->
-                
+                <Pagination :data="paginationData" @another-page="gotoAnotherPage" ></Pagination>
             </div>
         </main>
     </div>
@@ -30,15 +31,31 @@ const orderBatches = ref([])
 
 const paginationData = ref([])
 
+const loading = ref(true)
+
 onMounted(() => {
     currentPage.value = "Orders"
-    getOrderBatches()
+    getOrderBatches("/admin-api/meds/orderbatch/")
 })
 
-async function getOrderBatches() {
-    paginationData.value =  await useBaseFetch("/admin-api/meds/orderbatch/")
+async function getOrderBatches(url) {
+    loading.value = false
+    paginationData.value =  await useBaseFetch(url)
+    paginationData.value.results.forEach(element => {
+        element.selected = false
+    });
     orderBatches.value = paginationData.value.results
+    loading.value = true
     console.log(orderBatches.value)
+}
+
+async function gotoAnotherPage(url){
+    getOrderBatches(url)
+}
+
+async function filter(url){ 
+    console.log(url)
+    getOrderBatches(url)
 }
 
 </script>

@@ -26,7 +26,7 @@
                                         <label class="inline-flex">
                                             <span class="sr-only">Select all</span>
                                             <input id="parent-checkbox" class="form-checkbox" type="checkbox"
-                                                :value="allSelected" @click="toggleAll" />
+                                                v-model="allSelected" />
                                         </label>
                                     </div>
                                 </th>
@@ -63,7 +63,7 @@
                                         <label class="inline-flex">
                                             <span class="sr-only">Select</span>
                                             <input class="table-item form-checkbox" type="checkbox"
-                                                :value="orderBatch.selected" @click="toggleOne(orderBatch)" />
+                                                v-model="orderBatch.selected" />
                                         </label>
                                     </div>
                                 </td>
@@ -79,7 +79,7 @@
                                     </div>
                                 </td>
                                 <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-                                    <div >{{ new Date(orderBatch.datetime_ordered).toDateString() }}</div>
+                                    <div>{{ new Date(orderBatch.datetime_ordered).toDateString() }}</div>
                                 </td>
                                 <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                                     <a :href="`/pharmacy-update?id=${orderBatch?.pharmacy?.id}`"
@@ -87,8 +87,8 @@
                                 </td>
                                 <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                                     <a :href="`/user-update.html?uid=${orderBatch?.ordered_by?.id}`"
-                                        class="font-medium text-gray-800 underline"
-                                      >{{ orderBatch?.ordered_by?.full_name }}</a>
+                                        class="font-medium text-gray-800 underline">{{ orderBatch?.ordered_by?.full_name
+                                        }}</a>
                                 </td>
                                 <!-- <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                                 <div class="text-left font-medium text-green-500">$129.00</div>
@@ -98,8 +98,7 @@
                                         class="inline-flex font-medium bg-yellow-100 text-yellow-600 rounded-full text-center px-2.5 py-0.5">
                                         Acknowledged</div>
 
-                                    <div v-else-if="orderBatch?.status == 'Cancelled'"
-                                        class=" inline-flex font-medium bg-red-100 text-red-500 rounded-full
+                                    <div v-else-if="orderBatch?.status == 'Cancelled'" class=" inline-flex font-medium bg-red-100 text-red-500 rounded-full
                                         text-center px-2.5 py-0.5">
                                         Cancelled</div>
                                     <div v-else-if="orderBatch.status == 'Delivered'"
@@ -110,7 +109,7 @@
                                         Fulfilled</div>
                                 </td>
                                 <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-                                    <div class="text-center" x-text="orderBatch?.order_set?.length">1</div>
+                                    <div class="text-center">{{ orderBatch?.order_set?.length }}</div>
                                 </td>
                                 <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                                     <div class="flex items-center">
@@ -126,8 +125,52 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
 
+            <div id="danger-modal"
+                class="fixed inset-0 z-50 overflow-hidden flex items-center justify-center transform px-4 sm:px-6 bg-slate-300/50"
+                role="dialog" aria-modal="true" v-show="showDeleteModal">
+                <div class="bg-white rounded shadow-lg overflow-auto max-w-lg w-full max-h-full">
+                    <div class="p-5 flex space-x-4">
+                        <!-- Icon -->
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-red-100">
+                            <svg class="w-4 h-4 shrink-0 fill-current text-red-500" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 12c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm1-3H7V4h2v5z" />
+                            </svg>
+                        </div>
+                        <!-- Content -->
+                        <div>
+                            <!-- Modal header -->
+                            <div class="mb-2">
+                                <div class="text-lg font-semibold text-gray-800">Are you sure you want to delete
+                                    selected orders?</div>
+                            </div>
+                            <!-- Modal content -->
 
+                            <!-- Modal footer -->
+                            <div v-if="!deleting" class="flex flex-wrap justify-end space-x-2">
+                                <button class="btn-sm border-gray-200 hover:border-gray-300 text-gray-600"
+                                    @click="showDeleteModal = false">Cancel</button>
+                                <button class="btn-sm bg-red-500 hover:bg-red-600 text-white"
+                                    @click="deleteSelected()">Yes</button>
+                            </div>
+                            <div v-else class="flex justify-center">
+                                <svg aria-hidden="true"
+                                    class="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                                    viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="currentFill" />
+                                </svg>
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -138,23 +181,52 @@
 
 const props = defineProps(["orderbatches"])
 
+
 watch(props, (newData) => {
     orderBatches.value = newData.orderbatches
-    console.log(orderBatches.value[0])
 })
 
-const enabledDeleteBtn = ref(true)
+
 const allSelected = ref(false)
+
+watch(allSelected, (newVal) => {
+    orderBatches.value.forEach(element => {
+        element.selected = allSelected.value
+    });
+    console.log(orderBatches.value)
+})
 
 const orderBatches = ref([])
 
-function initiateDelete() {
+const enabledDeleteBtn = computed(() => {
+    var anyOneEnabled = false
+    orderBatches.value.forEach((each) => {
+        if (each.selected) anyOneEnabled = true
+    })
 
+    return anyOneEnabled
+
+})
+
+const showDeleteModal = ref(false)
+const deleting = ref(false)
+
+function initiateDelete() {
+    showDeleteModal.value = true
 }
 
-
-function toggleAll() {
-
+async function deleteSelected() {
+    console.log("delete selected")
+    deleting.value = true 
+    for (var orderBatch of orderBatches.value) {
+        if (orderBatch.selected) {
+            await useBaseFetch(`/admin-api/meds/orderbatch/${orderBatch.id}/`, {
+                method: 'DELETE'
+            })
+        }
+    }
+    deleting.value = false
+    location.reload()
 }
 
 

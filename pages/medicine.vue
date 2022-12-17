@@ -74,15 +74,7 @@
                         </div>
                     </div>
 
-                    <div>
-                        <select id="manufacturer" class="form-select mt-2" @change="selectManufacturer()"
-                            ref="selectedManufacturer">
-                            <option value="">Select Manufacturer</option>
-                            <option v-for="manufacturer in manufacturers" :key="manufacturer.id"
-                                :value="manufacturer.id">{{ manufacturer.name }}</option>
-                        </select>
-                    </div>
-
+                    <ManufacturerDropdown @selected-manufacturer-id="filterByManufacturer"></ManufacturerDropdown>
                     <div v-if="!loading" class="mt-8">
 
                         <!-- <h2 class="text-xl leading-snug text-gray-800 font-bold mb-5" x-text="headText">
@@ -165,6 +157,8 @@
 </template>
 
 <script setup>
+import ManufacturerDropdown from '~~/components/utils/ManufacturerDropdown.vue';
+
 
 const thisCurrentPage = useCurrentPage()
 
@@ -219,7 +213,6 @@ onMounted(async () => {
     thisCurrentPage.value = "Medicine"
     getRecentSearches()
     search()
-    getManufacturers()
 })
 
 
@@ -290,12 +283,6 @@ async function getManufacturers() {
     loading.value = false
 }
 
-async function selectManufacturer() {
-    loading.value = true
-    paginationData.value = await useBaseFetch(`/admin-api/meds/medicine?manufacturer=${selectedManufacturer.value.value}`)
-    medicines.value = paginationData.value.results
-    loading.value = false
-}
 
 
 function getImage(image) {
