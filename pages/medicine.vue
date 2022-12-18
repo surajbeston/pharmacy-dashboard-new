@@ -202,7 +202,6 @@ async function search() {
     else {
         paginationData.value = await useBaseFetch("/admin-api/meds/medicine/")
         medicines.value = paginationData.value.results
-
     }
     loading.value = false
     showSuggestions.value = false

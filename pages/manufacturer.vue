@@ -98,8 +98,6 @@ function getImage(image) {
     }
 }
 function getEditLink(manufacturer) {
-    return `/editManufacturer.html?manufacturer=${manufacturer.id}/`
+    return `/editManufacturer?manufacturer=${manufacturer.id}/`
 }
-
-
 </script>
