@@ -3,8 +3,11 @@
         <div class="bg-white shadow-lg rounded-sm border border-gray-200 mb-8">
             <div>
                 <header class="px-5 py-4 flex flex-row justify-between">
-                    <h2 class="font-semibold text-gray-800">All Orders <span class="text-gray-400 font-medium"
-                            x-text="orderBatches?.length"></span></h2>
+                    <div class="flex flex-row">
+                        <h2 class="font-semibold text-gray-800">All Orders <span class="text-gray-400 font-medium"
+                                x-text="orderBatches?.length"></span></h2>
+                        <Loader :loading="loading" class="ml-5"></Loader>
+                    </div>
                     <button
                         class="btn border-gray-200 hover:border-gray-300 text-red-500 disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
                         :disabled="!enabledDeleteBtn" @click="initiateDelete()">
@@ -178,8 +181,9 @@
 </template>
 
 <script setup>
+import Loader from '~~/components/utils/Loader.vue';
 
-const props = defineProps(["orderbatches"])
+const props = defineProps(["orderbatches", "loading"])
 
 
 watch(props, (newData) => {
@@ -217,7 +221,7 @@ function initiateDelete() {
 
 async function deleteSelected() {
     console.log("delete selected")
-    deleting.value = true 
+    deleting.value = true
     for (var orderBatch of orderBatches.value) {
         if (orderBatch.selected) {
             await useBaseFetch(`/admin-api/meds/orderbatch/${orderBatch.id}/`, {

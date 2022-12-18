@@ -14,9 +14,8 @@
                     <OrdersActions class="mr-20" @filter-url="filter"></OrdersActions>
                     <!-- Right: Actions -->
                     <!-- <%= require('html-loader!./partials/table-actions.html') %> -->
-
                 </div>
-                <OrdersTable :orderbatches="orderBatches" ></OrdersTable>
+                <OrdersTable :orderbatches="orderBatches" :loading="loading" ></OrdersTable>
                 <!-- <%= require('html-loader!./partials/orders/orders-table.html') %> -->
                 <Pagination :data="paginationData" @another-page="gotoAnotherPage" ></Pagination>
             </div>
@@ -39,13 +38,13 @@ onMounted(() => {
 })
 
 async function getOrderBatches(url) {
-    loading.value = false
+    loading.value = true
     paginationData.value =  await useBaseFetch(url)
     paginationData.value.results.forEach(element => {
         element.selected = false
     });
     orderBatches.value = paginationData.value.results
-    loading.value = true
+    loading.value = false
     console.log(orderBatches.value)
 }
 
@@ -54,7 +53,6 @@ async function gotoAnotherPage(url){
 }
 
 async function filter(url){ 
-    console.log(url)
     getOrderBatches(url)
 }
 
