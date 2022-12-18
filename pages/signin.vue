@@ -118,13 +118,10 @@ function signin(){
     }).then((response) => {
         localStorage.setItem('auth_token', response.auth_token)
         const router = useRouter();
-
         router.push({ path: "/" });
     }).catch((err) => {
         console.log(err)
         console.log(err.response)
     })
 }
-
-
 </script>
