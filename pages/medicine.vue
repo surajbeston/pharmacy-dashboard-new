@@ -104,7 +104,7 @@
                                                 <div>
                                                     <div
                                                         class="inline-flex text-sm font-medium bg-green-100 text-green-600 rounded-full text-center px-2 py-0.5">
-                                                        <span>{{ medicine?.generic_name }}</span>
+                                                        <span>{{ medicine?.generic_name.strength }}</span>
                                                     </div>
                                                 </div>
                                             </div>
