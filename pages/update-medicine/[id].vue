@@ -90,6 +90,7 @@
                       >Manufacturer <span class="text-red-500">*</span></label
                     >
                     <select id="manufacturer-item" class="w-full form-select">
+                      <option selected>{{ medicineInfo.manufacturer.name }}</option>
                       <option v-for="manufacturer in manufacturerList">
                         {{ manufacturer.name }}
                       </option>
