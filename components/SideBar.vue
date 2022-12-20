@@ -102,7 +102,7 @@ const pages = ref([
     {
         'name': 'Orders',
         'icon': 'manufacturer.png',
-        'url': '/orders'
+        'url': '/order'
     },
     {
         'name': 'Sign In',
