@@ -587,8 +587,7 @@ async function editMedicines() {
     }).catch((err) => {
       console.log(err.response)
     });
-    
-  
+
 }
 
 //delete Medicine
