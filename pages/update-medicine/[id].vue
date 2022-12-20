@@ -89,10 +89,11 @@
                       for="manufacturer-item"
                       >Manufacturer <span class="text-red-500">*</span></label
                     >
-                    <select 
-                      id="manufacturer-item"
-                      class="w-full form-select"
-                    ></select>
+                    <select id="manufacturer-item" class="w-full form-select">
+                      <option v-for="manufacturer in manufacturerList">
+                        {{ manufacturer.name }}
+                      </option>
+                    </select>
                   </div>
                 </div>
                 <div>
@@ -165,10 +166,12 @@
                       for="dosage-item"
                       >Dosage Form</label
                     >
-                    <select
-                      id="dosage-item"
-                      class="w-full form-select"
-                    ></select>
+                    <select id="dosage-item" class="w-full form-select">
+                      <option selected>-------</option>
+                      <option v-for="dosage in dosageFormList">
+                        {{ dosage }}
+                      </option>
+                    </select>
                     <!-- End -->
                   </div>
                 </div>
@@ -279,67 +282,91 @@
                 flex-wrap: wrap;
               "
             >
-              <div>
+              <div style="min-width:49%;">
                 <label class="block text-sm font-medium mb-1"
                   >Precautions
                 </label>
                 <textarea
-                  class="border-2 w-full"
+                  style="
+                    -webkit-box-sizing: border-box;
+                    -moz-box-sizing: border-box;
+                    box-sizing: border-box;
+                    width: 100%;
+                  "
+                  class="border-2"
                   v-model="medicineInfo.extras.precautions"
                   id="txtid"
                   name="txtname"
-                  rows="4"
-                  cols="78"
+                  rows="5"
+                  cols="50"
                   maxlength="500"
                 ></textarea>
               </div>
-              <div>
+              <div style="min-width:49%;">
                 <label class="block text-sm font-medium mb-1"
                   >Side Effects
                 </label>
                 <textarea
-                  class="border-2 w-full"
+                  style="
+                    -webkit-box-sizing: border-box;
+                    -moz-box-sizing: border-box;
+                    box-sizing: border-box;
+                    width: 100%;
+                  "
+                  class="border-2"
                   v-model="medicineInfo.extras.side_effects"
                   id="txtid"
                   name="txtname"
-                  rows="4"
-                  cols="77"
+                  rows="5"
+                  cols="50"
                   maxlength="500"
                 ></textarea>
               </div>
-              </div>
-              <div
+            </div>
+            <div
               style="
                 display: flex;
                 justify-content: space-between;
                 flex-wrap: wrap;
               "
             >
-              <div>
+              <div style="min-width:49%;">
                 <label class="block text-sm font-medium mt-0 mb-1"
                   >Drug Snapshot
                 </label>
                 <textarea
-                  class="border-2 w-full"
+                  style="
+                    -webkit-box-sizing: border-box;
+                    -moz-box-sizing: border-box;
+                    box-sizing: border-box;
+                    width: 100%;
+                  "
+                  class="border-2"
                   v-model="medicineInfo.extras.drug_snapshot"
                   id="txtid"
                   name="txtname"
-                  rows="4"
-                  cols="78"
+                  rows="5"
+                  cols="50"
                   maxlength="500"
                 ></textarea>
               </div>
-              <div>
+              <div style="min-width:49%;">
                 <label class="block text-sm font-medium mb-1"
                   >Contraindications
                 </label>
                 <textarea
-                  class="border-2 w-full"
+                  style="
+                    -webkit-box-sizing: border-box;
+                    -moz-box-sizing: border-box;
+                    box-sizing: border-box;
+                    width: 100%;
+                  "
+                  class="border-2"
                   v-model="medicineInfo.extras.contraindications"
                   id="txtid"
                   name="txtname"
-                  rows="4"
-                  cols="77"
+                  rows="5"
+                  cols="55"
                   maxlength="500"
                 ></textarea>
               </div>
@@ -481,6 +508,7 @@ const dosageFormList = [
 const route = useRoute();
 const slug = route.params.id;
 const apiURL = ref(useApiURL());
+const manufacturerList = ref([]);
 const medicineInfo = ref({
   slug: "",
   brand_name: "",
@@ -517,8 +545,20 @@ const medicineInfo = ref({
 
 onMounted(() => {
   retrieveMedicines(URL);
+  getManufacturerList();
 });
-//manufcaturer list from api
+//manufacturer list from api
+async function getManufacturerList() {
+  try {
+    var response = await useBaseFetch(
+      `/admin-api/meds/manufacturer?limit=10000&offset=0`
+    );
+    console.log(response.results);
+    manufacturerList.value = response.results;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 // getting data from the api
 async function retrieveMedicines() {
@@ -526,11 +566,6 @@ async function retrieveMedicines() {
     var response = await useBaseFetch(`/admin-api/meds/medicine/${slug}/`);
     console.log(response);
     medicineInfo.value = response;
-    let dosageItems = document.querySelector("#dosage-item");
-    dosageItems.innerHTML = `<option selected disabled>--------</option>`;
-    dosageFormList.map((dosage) => {
-      dosageItems.innerHTML += `<option>${dosage}</option>`;
-    });
   } catch (error) {
     console.error(error);
   }
@@ -538,9 +573,10 @@ async function retrieveMedicines() {
 //editing data
 async function editMedicines() {
   try {
+    var data = medicineInfo;
     const options = {
       method: "PATCH",
-      body: medicineInfo,
+      body: data,
     };
     const url = `/admin-api/meds/medicine/${slug}`;
     const response = await useBaseFetch(url, options);
