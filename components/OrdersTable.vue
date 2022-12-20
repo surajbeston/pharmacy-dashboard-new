@@ -72,12 +72,15 @@
                                 </td>
                                 <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                                     <div class="flex items-center text-gray-800">
-                                        <div
-                                            class="w-10 h-10 shrink-0 flex items-center justify-center bg-gray-100 rounded-full mr-2 sm:mr-3">
-                                            <img class="ml-1" src="../../images/icon-01.svg" width="20" height="20"
-                                                alt="Icon 01" />
-                                        </div>
-                                        <div class="font-medium text-light-blue-500">#<span>{{ orderBatch?.id }}</span>
+                                        <a :href="`/order/${orderBatch.id}`">
+                                            <div
+                                                class="w-10 h-10 shrink-0 flex items-center justify-center bg-gray-100 rounded-full mr-2 sm:mr-3">
+                                                <img class="ml-1" src="../../images/icon-01.svg" width="20" height="20"
+                                                    alt="Icon 01" />
+                                            </div>
+                                        </a>
+                                        <div class="font-medium text-blue-500"><a :href="`/order/${orderBatch.id}`">
+                                                #<span>{{ orderBatch?.id }}</span></a>
                                         </div>
                                     </div>
                                 </td>

@@ -34,7 +34,7 @@ const loading = ref(true)
 
 onMounted(() => {
     currentPage.value = "Orders"
-    getOrderBatches("/admin-api/meds/orderbatch/")
+    getOrderBatches("/admin-api/meds/order/")
 })
 
 async function getOrderBatches(url) {

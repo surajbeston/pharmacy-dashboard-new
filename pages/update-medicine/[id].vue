@@ -1,17 +1,11 @@
 <template>
-  <div
-    class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden bg-white"
-  >
+  <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden bg-white">
     <main>
       <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
         <h2 class="text-2xl text-gray-800 font-bold mb-6">Edit Medicine</h2>
         <div style="display: flex" ; class="upper">
-          <img
-            class="h-[200px] object-contain"
-            width="286"
-            height="160"
-            :src="`${apiURL}/static/medicines/${medicineInfo?.extras?.image}`"
-          />
+          <img class="h-[200px] object-contain" width="286" height="160"
+            :src="`${apiURL}/static/medicines/${medicineInfo?.extras?.image}`" />
           <div style="margin-left: 20px">
             <div style="margin-bottom: 10px; font-weight: 500">
               Medicine Name: <label>{{ medicineInfo.brand_name }}</label>
@@ -31,10 +25,8 @@
         </div>
         <div class="mb-8">
           <!-- button starts  -->
-          <button
-            style="display: block; height: 30px; padding: 0; width: 75px"
-            class="ml-auto text-center text-indigo-400 font-bold rounded py-2 w-2/12 focus:outline-none bg-white-900 border-2 border-indigo-400"
-          >
+          <button style="display: block; height: 30px; padding: 0; width: 75px"
+            class="ml-auto text-center text-indigo-400 font-bold rounded py-2 w-2/12 focus:outline-none bg-white-900 border-2 border-indigo-400">
             History
           </button>
         </div>
@@ -54,28 +46,15 @@
               <div class="grid gap-5 md:grid-cols-2">
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default"
-                      >Brand Name</label
-                    >
-                    <input
-                      v-model="medicineInfo.brand_name"
-                      id="default"
-                      class="form-input w-full mb-2"
-                      type="text"
-                    />
+                    <label class="block text-sm font-medium mb-1" for="default">Brand Name</label>
+                    <input v-model="medicineInfo.brand_name" id="default" class="form-input w-full mb-2" type="text" />
                   </div>
                 </div>
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default"
-                      >Generic Name</label
-                    >
-                    <input
-                      v-model="medicineInfo.generic_name"
-                      id="default"
-                      class="form-input w-full mb-2"
-                      type="text"
-                    />
+                    <label class="block text-sm font-medium mb-1" for="default">Generic Name</label>
+                    <input v-model="medicineInfo.generic_name" id="default" class="form-input w-full mb-2"
+                      type="text" />
                   </div>
                 </div>
                 <!-- Another section starts here  -->
@@ -84,28 +63,15 @@
               <div class="grid gap-5 md:grid-cols-2">
                 <div>
                   <div>
-                    <label
-                      class="block text-sm font-medium mb-1"
-                      for="manufacturer-item"
-                      >Manufacturer <span class="text-red-500">*</span></label
-                    >
-                    <select
-                      id="manufacturer-item"
-                      class="w-full form-select"
-                    ></select>
+                    <label class="block text-sm font-medium mb-1" for="manufacturer-item">Manufacturer <span
+                        class="text-red-500">*</span></label>
+                    <select id="manufacturer-item" class="w-full form-select"></select>
                   </div>
                 </div>
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default"
-                      >Packaging</label
-                    >
-                    <input
-                      v-model="medicineInfo.packaging"
-                      id="default"
-                      class="form-input w-full mb-2"
-                      type="text"
-                    />
+                    <label class="block text-sm font-medium mb-1" for="default">Packaging</label>
+                    <input v-model="medicineInfo.packaging" id="default" class="form-input w-full mb-2" type="text" />
                   </div>
                 </div>
               </div>
@@ -114,29 +80,17 @@
               <div class="grid gap-5 md:grid-cols-2">
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default"
-                      >Sales Price <span class="text-red-500">*</span></label
-                    >
-                    <input
-                      v-model="medicineInfo.sales_price"
-                      id="default"
-                      class="form-input w-full mb-2"
-                      type="text"
-                    />
+                    <label class="block text-sm font-medium mb-1" for="default">Sales Price <span
+                        class="text-red-500">*</span></label>
+                    <input v-model="medicineInfo.sales_price" id="default" class="form-input w-full mb-2" type="text" />
                   </div>
                 </div>
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default"
-                      >Cost Price <span class="text-red-500">*</span></label
-                    >
-                    <input
-                      v-model="medicineInfo.cost_price"
-                      id="default"
-                      class="form-input w-full mb-2"
-                      type="text"
-                      required
-                    />
+                    <label class="block text-sm font-medium mb-1" for="default">Cost Price <span
+                        class="text-red-500">*</span></label>
+                    <input v-model="medicineInfo.cost_price" id="default" class="form-input w-full mb-2" type="text"
+                      required />
                   </div>
                 </div>
               </div>
@@ -145,30 +99,17 @@
               <div class="grid gap-5 md:grid-cols-2">
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default"
-                      >MRP: <span class="text-red-500">*</span></label
-                    >
+                    <label class="block text-sm font-medium mb-1" for="default">MRP: <span
+                        class="text-red-500">*</span></label>
                     <!-- <pre>{{ medicineInfo.extras }}</pre> -->
-                    <input
-                      v-model="medicineInfo.extras.mrp"
-                      id="default"
-                      class="form-input w-full mb-2"
-                      type="text"
-                    />
+                    <input v-model="medicineInfo.extras.mrp" id="default" class="form-input w-full mb-2" type="text" />
                   </div>
                 </div>
                 <div>
                   <div>
                     <!-- Start -->
-                    <label
-                      class="block text-sm font-medium mb-1"
-                      for="dosage-item"
-                      >Dosage Form</label
-                    >
-                    <select
-                      id="dosage-item"
-                      class="w-full form-select"
-                    ></select>
+                    <label class="block text-sm font-medium mb-1" for="dosage-item">Dosage Form</label>
+                    <select id="dosage-item" class="w-full form-select"></select>
                     <!-- End -->
                   </div>
                 </div>
@@ -178,28 +119,15 @@
               <div class="grid gap-5 md:grid-cols-2">
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default"
-                      >Strength(MG) <span class="text-red-500">*</span></label
-                    >
-                    <input
-                      v-model="medicineInfo.strength_mg"
-                      id="default"
-                      class="form-input w-full mb-2"
-                      type="text"
-                    />
+                    <label class="block text-sm font-medium mb-1" for="default">Strength(MG) <span
+                        class="text-red-500">*</span></label>
+                    <input v-model="medicineInfo.strength_mg" id="default" class="form-input w-full mb-2" type="text" />
                   </div>
                 </div>
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default"
-                      >Unit:</label
-                    >
-                    <input
-                      v-model="medicineInfo.unit"
-                      id="default"
-                      class="form-input w-full mb-2"
-                      type="text"
-                    />
+                    <label class="block text-sm font-medium mb-1" for="default">Unit:</label>
+                    <input v-model="medicineInfo.unit" id="default" class="form-input w-full mb-2" type="text" />
                   </div>
                 </div>
               </div>
@@ -208,28 +136,16 @@
               <div class="grid gap-5 md:grid-cols-2">
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default"
-                      >Custom <span class="text-red-500">*</span></label
-                    >
-                    <input
-                      v-model="medicineInfo.custom"
-                      id="default"
-                      class="form-input w-full mb-2"
-                      type="text"
-                    />
+                    <label class="block text-sm font-medium mb-1" for="default">Custom <span
+                        class="text-red-500">*</span></label>
+                    <input v-model="medicineInfo.custom" id="default" class="form-input w-full mb-2" type="text" />
                   </div>
                 </div>
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default"
-                      >Bonus <span class="text-red-500">*</span></label
-                    >
-                    <input
-                      v-model="medicineInfo.bonus"
-                      id="default"
-                      class="form-input w-full mb-2"
-                      type="text"
-                    />
+                    <label class="block text-sm font-medium mb-1" for="default">Bonus <span
+                        class="text-red-500">*</span></label>
+                    <input v-model="medicineInfo.bonus" id="default" class="form-input w-full mb-2" type="text" />
                   </div>
                 </div>
               </div>
@@ -238,28 +154,17 @@
               <div class="grid gap-5 md:grid-cols-2">
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default"
-                      >Lot bonus: <span class="text-red-500">*</span></label
-                    >
-                    <input
-                      v-model="medicineInfo.lot_bonus"
-                      id="default"
-                      class="form-input w-full border-sky-500  mb-2 border-2"
-                      type="text"
-                    />
+                    <label class="block text-sm font-medium mb-1" for="default">Lot bonus: <span
+                        class="text-red-500">*</span></label>
+                    <input v-model="medicineInfo.lot_bonus" id="default"
+                      class="form-input w-full border-sky-500  mb-2 border-2" type="text" />
                   </div>
                 </div>
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default"
-                      >Class: <span class="text-red-500">*</span></label
-                    >
-                    <input
-                      v-model="medicineInfo._class"
-                      id="default"
-                      class="form-input w-full mb-2"
-                      type="text"
-                    />
+                    <label class="block text-sm font-medium mb-1" for="default">Class: <span
+                        class="text-red-500">*</span></label>
+                    <input v-model="medicineInfo._class" id="default" class="form-input w-full mb-2" type="text" />
                   </div>
                 </div>
               </div>
@@ -271,10 +176,7 @@
               <div style="display: flex">
                 <div class="m-1.5">
                   <!-- Start -->
-                  <button
-                    @click="editMedicines()"
-                    class="btn bg-green-500 hover:bg-green-600 text-white"
-                  >
+                  <button @click="editMedicines()" class="btn bg-green-500 hover:bg-green-600 text-white">
                     Save
                   </button>
                   <!-- End -->
@@ -283,40 +185,24 @@
                 <div class="m-1.5">
                   <!-- Start -->
                   <div>
-                    <button
-                      class="btn bg-red-500 hover:bg-red-600 text-white"
-                      @click.prevent="show = true"
-                      aria-controls="danger-modal"
-                    >
+                    <button class="btn bg-red-500 hover:bg-red-600 text-white" @click.prevent="show = true"
+                      aria-controls="danger-modal">
                       Delete
                     </button>
                     <!-- Modal backdrop -->
 
                     <!-- Danger Modal dialog -->
-                    <div
-                      v-if="show"
-                      id="danger-modal"
+                    <div v-if="show" id="danger-modal"
                       class="fixed inset-0 z-50 overflow-hidden flex items-center my-4 justify-center transform px-4 sm:px-6"
-                      role="dialog"
-                      aria-modal="true"
-                    >
-                      <div
-                        class="bg-white rounded shadow-lg overflow-auto max-w-lg w-full max-h-full"
-                        @click.outside="modalOpen = false"
-                        @keydown.escape.window="modalOpen = false"
-                      >
+                      role="dialog" aria-modal="true">
+                      <div class="bg-white rounded shadow-lg overflow-auto max-w-lg w-full max-h-full"
+                        @click.outside="modalOpen = false" @keydown.escape.window="modalOpen = false">
                         <div class="p-5 flex space-x-4">
                           <!-- Icon -->
-                          <div
-                            class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-red-100"
-                          >
-                            <svg
-                              class="w-4 h-4 shrink-0 fill-current text-red-500"
-                              viewBox="0 0 16 16"
-                            >
+                          <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-red-100">
+                            <svg class="w-4 h-4 shrink-0 fill-current text-red-500" viewBox="0 0 16 16">
                               <path
-                                d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 12c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm1-3H7V4h2v5z"
-                              />
+                                d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 12c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm1-3H7V4h2v5z" />
                             </svg>
                           </div>
                           <!-- Content -->
@@ -338,17 +224,12 @@
                             </div>
                             <!-- Modal footer -->
                             <div class="flex flex-wrap justify-end space-x-2">
-                              <button
-                                class="btn-sm border-gray-200 hover:border-gray-300 text-gray-600"
-                                @click="show = false"
-                              >
+                              <button class="btn-sm border-gray-200 hover:border-gray-300 text-gray-600"
+                                @click="show = false">
                                 Cancel
                               </button>
 
-                              <button
-                                @click="deleteMedicines()"
-                                class="btn-sm bg-red-500 hover:bg-red-600 text-white"
-                              >
+                              <button @click="deleteMedicines()" class="btn-sm bg-red-500 hover:bg-red-600 text-white">
                                 Yes, Delete it
                               </button>
                             </div>
@@ -367,68 +248,34 @@
             <div style="border: 1px solid black; background: black"></div>
             <div style="margin-bottom: 40px"></div>
             <!-- others under line starts here  -->
-            <div
-              style="
+            <div style="
                 display: flex;
                 justify-content: space-between;
                 flex-wrap: wrap;
-              "
-            >
+              ">
               <div>
-                <label class="block text-sm font-medium mb-1"
-                  >Precautions
+                <label class="block text-sm font-medium mb-1">Precautions
                 </label>
-                <textarea
-                  class="border-sky-500  mb-2 border-2"
-                  v-model="medicineInfo.extras.precautions"
-                  id="txtid"
-                  name="txtname"
-                  rows="4"
-                  cols="50"
-                  maxlength="500"
-                ></textarea>
+                <textarea class="border-sky-500  mb-2 border-2" v-model="medicineInfo.extras.precautions" id="txtid"
+                  name="txtname" rows="4" cols="50" maxlength="500"></textarea>
               </div>
               <div>
-                <label class="block text-sm font-medium mb-1"
-                  >Side Effects
+                <label class="block text-sm font-medium mb-1">Side Effects
                 </label>
-                <textarea
-                  class="border-sky-500  mb-2 border-2"
-                  v-model="medicineInfo.extras.side_effects"
-                  id="txtid"
-                  name="txtname"
-                  rows="4"
-                  cols="50"
-                  maxlength="500"
-                ></textarea>
+                <textarea class="border-sky-500  mb-2 border-2" v-model="medicineInfo.extras.side_effects" id="txtid"
+                  name="txtname" rows="4" cols="50" maxlength="500"></textarea>
               </div>
               <div>
-                <label class="block text-sm font-medium mt-0 mb-1"
-                  >Drug Snapshot
+                <label class="block text-sm font-medium mt-0 mb-1">Drug Snapshot
                 </label>
-                <textarea
-                  class="border-sky-500  mb-2 border-2"
-                  v-model="medicineInfo.extras.drug_snapshot"
-                  id="txtid"
-                  name="txtname"
-                  rows="4"
-                  cols="50"
-                  maxlength="500"
-                ></textarea>
+                <textarea class="border-sky-500  mb-2 border-2" v-model="medicineInfo.extras.drug_snapshot" id="txtid"
+                  name="txtname" rows="4" cols="50" maxlength="500"></textarea>
               </div>
               <div>
-                <label class="block text-sm font-medium mb-1"
-                  >Contraindications
+                <label class="block text-sm font-medium mb-1">Contraindications
                 </label>
-                <textarea
-                  class="border-sky-500  mb-2 border-2"
-                  v-model="medicineInfo.extras.contraindications"
-                  id="txtid"
-                  name="txtname"
-                  rows="4"
-                  cols="50"
-                  maxlength="500"
-                ></textarea>
+                <textarea class="border-sky-500  mb-2 border-2" v-model="medicineInfo.extras.contraindications"
+                  id="txtid" name="txtname" rows="4" cols="50" maxlength="500"></textarea>
               </div>
             </div>
           </div>
@@ -531,21 +378,22 @@ async function retrieveMedicines() {
 }
 //editing data
 async function editMedicines() {
-  try {
-    const options = {
-      method: "POST",
-      body: medicineInfo,
-    };
-    const url = `/admin-api/meds/medicine/${slug}`;
-    const response = await useBaseFetch(url, options);
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-  } catch (error) {
-    console.log(error);
-  } finally {
-    location.reload("/");
-  }
+  medicineInfo.value.generic_name = medicineInfo.value.generic_name.salt_code
+  medicineInfo.value.manufacturer = medicineInfo.value.manufacturer.id
+  delete medicineInfo.id
+
+  const options = {
+    method: "PATCH",
+    body: medicineInfo.value,
+  };
+  const url = `/admin-api/meds/medicine/${slug}/`;
+  const response = useBaseFetch(url, options).then((response) => {
+    location.reload()
+  }).catch((err) => {
+    console.log(err.response)
+  });
+
+
 }
 
 //delete Medicine
@@ -555,13 +403,14 @@ async function deleteMedicines() {
       method: "DELETE",
     };
     const url = `/admin-api/meds/medicine/${slug}`;
-    const response = await useBaseFetch(url, options);
+    const response = useBaseFetch(url, options)
     if (!response.ok) {
       throw new Error(response.statusText);
     }
     // const data = response.json();
   } catch (error) {
     console.error(error);
+    console.log(error.response)
   } finally {
     location.reload("/");
     return route.push({ path: "/medicine" });
