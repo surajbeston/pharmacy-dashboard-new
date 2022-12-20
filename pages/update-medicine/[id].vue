@@ -52,9 +52,15 @@
                 </div>
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default">Generic Name</label>
-                    <input v-model="medicineInfo.generic_name" id="default" class="form-input w-full mb-2"
-                      type="text" />
+                    <label class="block text-sm font-medium mb-1" for="default"
+                      >Generic Name</label
+                    >
+                    <input
+                      v-model="medicineInfo.generic_name.name"
+                      id="default"
+                      class="form-input w-full mb-2"
+                      type="text"
+                    />
                   </div>
                 </div>
                 <!-- Another section starts here  -->
@@ -63,9 +69,17 @@
               <div class="grid gap-5 md:grid-cols-2">
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="manufacturer-item">Manufacturer <span
-                        class="text-red-500">*</span></label>
-                    <select id="manufacturer-item" class="w-full form-select"></select>
+                    <label
+                      class="block text-sm font-medium mb-1"
+                      for="manufacturer-item"
+                      >Manufacturer <span class="text-red-500">*</span></label
+                    >
+                    <select id="manufacturer-item" class="w-full form-select">
+                      <option selected>{{ medicineInfo.manufacturer.name }}</option>
+                      <option v-for="manufacturer in manufacturerList">
+                        {{ manufacturer.name }}
+                      </option>
+                    </select>
                   </div>
                 </div>
                 <div>
@@ -108,8 +122,17 @@
                 <div>
                   <div>
                     <!-- Start -->
-                    <label class="block text-sm font-medium mb-1" for="dosage-item">Dosage Form</label>
-                    <select id="dosage-item" class="w-full form-select"></select>
+                    <label
+                      class="block text-sm font-medium mb-1"
+                      for="dosage-item"
+                      >Dosage Form</label
+                    >
+                    <select id="dosage-item" class="w-full form-select">
+                      <option selected>-------</option>
+                      <option v-for="dosage in dosageFormList">
+                        {{ dosage }}
+                      </option>
+                    </select>
                     <!-- End -->
                   </div>
                 </div>
@@ -154,10 +177,15 @@
               <div class="grid gap-5 md:grid-cols-2">
                 <div>
                   <div>
-                    <label class="block text-sm font-medium mb-1" for="default">Lot bonus: <span
-                        class="text-red-500">*</span></label>
-                    <input v-model="medicineInfo.lot_bonus" id="default"
-                      class="form-input w-full border-sky-500  mb-2 border-2" type="text" />
+                    <label class="block text-sm font-medium mb-1" for="default"
+                      >Lot bonus: <span class="text-red-500">*</span></label
+                    >
+                    <input
+                      v-model="medicineInfo.lot_bonus"
+                      id="default"
+                      class="form-input w-full mb-2 border-2"
+                      type="text"
+                    />
                   </div>
                 </div>
                 <div>
@@ -173,75 +201,6 @@
 
               <!-- ends  -->
               <!-- starts here buttons  -->
-              <div style="display: flex">
-                <div class="m-1.5">
-                  <!-- Start -->
-                  <button @click="editMedicines()" class="btn bg-green-500 hover:bg-green-600 text-white">
-                    Save
-                  </button>
-                  <!-- End -->
-                </div>
-
-                <div class="m-1.5">
-                  <!-- Start -->
-                  <div>
-                    <button class="btn bg-red-500 hover:bg-red-600 text-white" @click.prevent="show = true"
-                      aria-controls="danger-modal">
-                      Delete
-                    </button>
-                    <!-- Modal backdrop -->
-
-                    <!-- Danger Modal dialog -->
-                    <div v-if="show" id="danger-modal"
-                      class="fixed inset-0 z-50 overflow-hidden flex items-center my-4 justify-center transform px-4 sm:px-6"
-                      role="dialog" aria-modal="true">
-                      <div class="bg-white rounded shadow-lg overflow-auto max-w-lg w-full max-h-full"
-                        @click.outside="modalOpen = false" @keydown.escape.window="modalOpen = false">
-                        <div class="p-5 flex space-x-4">
-                          <!-- Icon -->
-                          <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-red-100">
-                            <svg class="w-4 h-4 shrink-0 fill-current text-red-500" viewBox="0 0 16 16">
-                              <path
-                                d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 12c-.6 0-1-.4-1-1s.4-1 1-1 1 .4 1 1-.4 1-1 1zm1-3H7V4h2v5z" />
-                            </svg>
-                          </div>
-                          <!-- Content -->
-                          <div>
-                            <!-- Modal header -->
-                            <div class="mb-2">
-                              <div class="text-lg font-semibold text-gray-800">
-                                Delete 1 Medicine
-                              </div>
-                            </div>
-                            <!-- Modal content -->
-                            <div class="text-sm mb-10">
-                              <div class="space-y-2">
-                                <p>
-                                  Do you surely want to delete that? There is no
-                                  come back after this
-                                </p>
-                              </div>
-                            </div>
-                            <!-- Modal footer -->
-                            <div class="flex flex-wrap justify-end space-x-2">
-                              <button class="btn-sm border-gray-200 hover:border-gray-300 text-gray-600"
-                                @click="show = false">
-                                Cancel
-                              </button>
-
-                              <button @click="deleteMedicines()" class="btn-sm bg-red-500 hover:bg-red-600 text-white">
-                                Yes, Delete it
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- End -->
-                  </div>
-                </div>
-              </div>
               <!-- ends here buttons  -->
             </div>
             <!-- others under line starts here  -->
@@ -249,30 +208,95 @@
                 display: flex;
                 justify-content: space-between;
                 flex-wrap: wrap;
-              ">
-              <div>
-                <label class="block text-sm font-medium mb-1">Precautions
+              "
+            >
+              <div style="min-width:49%;">
+                <label class="block text-sm font-medium mb-1"
+                  >Precautions
                 </label>
-                <textarea class="border-sky-500  mb-2 border-2" v-model="medicineInfo.extras.precautions" id="txtid"
-                  name="txtname" rows="4" cols="50" maxlength="500"></textarea>
+                <textarea
+                  style="
+                    -webkit-box-sizing: border-box;
+                    -moz-box-sizing: border-box;
+                    box-sizing: border-box;
+                    width: 100%;
+                  "
+                  class="border-2"
+                  v-model="medicineInfo.extras.precautions"
+                  id="txtid"
+                  name="txtname"
+                  rows="5"
+                  cols="50"
+                  maxlength="500"
+                ></textarea>
               </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">Side Effects
+              <div style="min-width:49%;">
+                <label class="block text-sm font-medium mb-1"
+                  >Side Effects
                 </label>
-                <textarea class="border-sky-500  mb-2 border-2" v-model="medicineInfo.extras.side_effects" id="txtid"
-                  name="txtname" rows="4" cols="50" maxlength="500"></textarea>
+                <textarea
+                  style="
+                    -webkit-box-sizing: border-box;
+                    -moz-box-sizing: border-box;
+                    box-sizing: border-box;
+                    width: 100%;
+                  "
+                  class="border-2"
+                  v-model="medicineInfo.extras.side_effects"
+                  id="txtid"
+                  name="txtname"
+                  rows="5"
+                  cols="50"
+                  maxlength="500"
+                ></textarea>
               </div>
-              <div>
-                <label class="block text-sm font-medium mt-0 mb-1">Drug Snapshot
+            </div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+              "
+            >
+              <div style="min-width:49%;">
+                <label class="block text-sm font-medium mt-0 mb-1"
+                  >Drug Snapshot
                 </label>
-                <textarea class="border-sky-500  mb-2 border-2" v-model="medicineInfo.extras.drug_snapshot" id="txtid"
-                  name="txtname" rows="4" cols="50" maxlength="500"></textarea>
+                <textarea
+                  style="
+                    -webkit-box-sizing: border-box;
+                    -moz-box-sizing: border-box;
+                    box-sizing: border-box;
+                    width: 100%;
+                  "
+                  class="border-2"
+                  v-model="medicineInfo.extras.drug_snapshot"
+                  id="txtid"
+                  name="txtname"
+                  rows="5"
+                  cols="50"
+                  maxlength="500"
+                ></textarea>
               </div>
-              <div>
-                <label class="block text-sm font-medium mb-1">Contraindications
+              <div style="min-width:49%;">
+                <label class="block text-sm font-medium mb-1"
+                  >Contraindications
                 </label>
-                <textarea class="border-sky-500  mb-2 border-2" v-model="medicineInfo.extras.contraindications"
-                  id="txtid" name="txtname" rows="4" cols="50" maxlength="500"></textarea>
+                <textarea
+                  style="
+                    -webkit-box-sizing: border-box;
+                    -moz-box-sizing: border-box;
+                    box-sizing: border-box;
+                    width: 100%;
+                  "
+                  class="border-2"
+                  v-model="medicineInfo.extras.contraindications"
+                  id="txtid"
+                  name="txtname"
+                  rows="5"
+                  cols="55"
+                  maxlength="500"
+                ></textarea>
               </div>
             </div>
           </div>
@@ -476,21 +500,20 @@ async function retrieveMedicines() {
 }
 //editing data
 async function editMedicines() {
-  medicineInfo.value.generic_name = medicineInfo.value.generic_name.salt_code
-  medicineInfo.value.manufacturer = medicineInfo.value.manufacturer.id
-  delete medicineInfo.id
-
-  const options = {
-    method: "PATCH",
-    body: medicineInfo.value,
-  };
-  const url = `/admin-api/meds/medicine/${slug}/`;
-  const response = useBaseFetch(url, options).then((response) => {
-    location.reload()
-  }).catch((err) => {
-    console.log(err.response)
-  });
-
+    var data = medicineInfo;
+    data.value.generic_name = data.value.generic_name.salt_code
+    data.value.manufacturer = data.value.manufacturer.id
+    delete data.value.id
+    const options = {
+      method: "PATCH",
+      body: data.value,
+    };
+    const url = `/admin-api/meds/medicine/${slug}/`;
+    const response =  useBaseFetch(url, options).then((response) => {
+      console.log(response)
+    }).catch((err) => {
+      console.log(err.response)
+    });
 
 }
 
