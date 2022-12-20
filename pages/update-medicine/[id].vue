@@ -572,22 +572,22 @@ async function retrieveMedicines() {
 }
 //editing data
 async function editMedicines() {
-  try {
     var data = medicineInfo;
+    data.value.generic_name = data.value.generic_name.salt_code
+    data.value.manufacturer = data.value.manufacturer.id
+    delete data.value.id
     const options = {
       method: "PATCH",
-      body: data,
+      body: data.value,
     };
-    const url = `/admin-api/meds/medicine/${slug}`;
-    const response = await useBaseFetch(url, options);
-    if (!response.ok) {
-      throw new Error(response.statusText);
-    }
-  } catch (error) {
-    console.log(error);
-  } finally {
-    location.reload("/");
-  }
+    const url = `/admin-api/meds/medicine/${slug}/`;
+    const response =  useBaseFetch(url, options).then((response) => {
+      console.log(response)
+    }).catch((err) => {
+      console.log(err.response)
+    });
+    
+  
 }
 
 //delete Medicine
