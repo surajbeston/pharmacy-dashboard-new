@@ -15,7 +15,6 @@
                                 </td>
                                 <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                                     <div class="flex items-center text-gray-800">
-
                                         <div class="font-medium text-gray-800">Pharmacy: <a
                                                 :href="`/pharmacy/${currentOrder?.pharmacy?.id}`" class="underline">{{
                                                         currentOrder?.pharmacy?.name
