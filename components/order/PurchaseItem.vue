@@ -68,6 +68,8 @@
 </template>
 
 <script setup>
+import consolaGlobalInstance from 'consola';
+
 
 const props = defineProps(["purchaseItem", "quantityToAllocate"])
 const emit = defineEmits(["allocated"])
@@ -89,21 +91,18 @@ function decreaseAllocation() {
 
 // const inputAllocation = ref(0)
 
-const allocation = computed(() => props.purchaseItem.allocation)
-
-watch(allocation, (newAllocation) => {
-    if (newAllocation < 0) {
-        props.purchaseItem.allocation = 0
-    }
-    else {
-        var quantityIncreased = newAllocation - lastAllocation.value
-        console.log(quantityLeft.value)
-        if (quantityIncreased > props.quantityToAllocate || quantityLeft.value < 0) {
-            props.purchaseItem.allocation = lastAllocation.value
-        } else {
-            emit("allocated", true)
-            lastAllocation.value = newAllocation
+const allocation = computed({
+    get(){
+        return props.purchaseItem.allocation
+    },
+    set(allocation){
+        if (allocation < 0) props.purchaseItem.allocation = 0
+        else{
+            if (!(allocation > props.quantityToAllocate && quantityLeft.value < 0)  ){
+                props.purchaseItem.allocation = allocation
+            }
         }
     }
 })
+
 </script>

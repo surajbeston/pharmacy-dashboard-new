@@ -6,7 +6,7 @@
             <tbody class="text-sm">
                 <!-- Row -->
                 <tr>
-                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-[18%]">
+                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-[10%]">
                         <input type="checkbox" class="form-checkbox" v-model="orderItem.selected" />
                     </td>
                     <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-[18%]">
@@ -25,10 +25,18 @@
                                 orderItem?.last_sales_price
                         }}</span></div>
                     </td>
-                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-[18%]">
+                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-[26%]">
                         <div class="text-left">Total Price: <span class="font-bold">Rs. {{
                                 orderItem?.total_order_amount
                         }}</span></div>
+                    </td>
+                    <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-[18%]">
+                        <div v-if="quantityToAllocate > 0"
+                            class="text-xs inline-flex font-medium bg-red-100 text-red-600 rounded-full text-center px-2.5 py-1">
+                            Unallocated</div>
+                        <div v-else
+                            class="text-xs inline-flex font-medium bg-green-100 text-green-600 rounded-full text-center px-2.5 py-1">
+                            Allocated</div>
                     </td>
                     <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-[18%]">
                         <div class="flex items-end">
@@ -61,7 +69,7 @@
                                         Quantity to Allocate: <span class="font-bold">{{ quantityToAllocate }}</span>
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <label class="block text-sm font-medium mb-1" for="country">Filter Order
                                         Items</label>
@@ -85,7 +93,7 @@
                             </div>
                             <div v-for="purchaseItem in purchaseItems" :key="purchaseItem?.id">
                                 <PurchaseItem :purchase-item="purchaseItem" :quantity-to-allocate="quantityToAllocate"
-                                     class="ml-[50px]"></PurchaseItem>
+                                    class="ml-[50px]"></PurchaseItem>
                             </div>
                             <div class="flex justify-center">
                                 <button v-show="nextPage" @click="loadNextPage()"
@@ -97,7 +105,7 @@
 
             </tbody>
         </table>
-        <div v-if="loading" class=" w-full ml-1">
+        <div v-if="loading" class=" w-full ml-1 m-5">
             <Loader :loading="loading"></Loader>
         </div>
     </div>
@@ -108,7 +116,8 @@ import Loader from '../utils/Loader.vue';
 import PurchaseItem from './PurchaseItem.vue';
 
 
-const props = defineProps(["orderItem"])
+const props = defineProps(["orderItem", "autoAllocate"])
+const emit = defineEmits(["allocated"])
 const purchaseItems = ref([])
 const loading = ref(false)
 const nextPage = ref(null)
@@ -171,18 +180,55 @@ const quantityToAllocate = computed(() => {
     return 0
 })
 
+watch(quantityToAllocate, (toAllocate) => {
+    if (toAllocate == 0){
+        var items = []
+        purchaseItems.value.forEach((item) => {
+            if (item.allocation > 0){
+                items.push(item)
+            }
+        })
+        props.orderItem.supplyItems = items
+        props.orderItem.allocated = true
+        emit("allocated", true)
+    }
+    else{
+        emit("allocated", false)
+    }
+})
 
-function allocateForItem(){
-    for (var purchaseItem of purchaseItems.value){
-        if (purchaseItem.quantity >= quantityToAllocate.value){
-            purchaseItem.allocation = quantityToAllocate.value
+
+function allocateForItem() {
+    if (quantityToAllocate.value > 0) {
+        for (var purchaseItem of purchaseItems.value) {
+            if (purchaseItem.quantity >= quantityToAllocate.value) {
+                purchaseItem.allocation = quantityToAllocate.value
+            }
+            else {
+                purchaseItem.allocation = purchaseItem.quantity
+            }
+            console.log("quantity to allocate", quantityToAllocate.value)
+            if (quantityToAllocate.value <= 0) break
         }
-        else{
-            purchaseItem.allocation = purchaseItem.quantity
-        }
-        if (quantityToAllocate.value <= 0 ) break
     }
 }
+
+const autoAllocate = computed(() => props.autoAllocate)
+
+watch(autoAllocate, async (allocate) => {
+    if (allocate) {
+        loading.value = true
+        var url = `/admin-api/meds/purchaseitem/?medicine=${props.orderItem.medicine.slug}&ordering=expiry_date&limit=10000`
+        
+        var response = await useBaseFetch(url)
+        response.results.forEach((item) => {
+            item.allocation = 0
+        })
+        purchaseItems.value = response.results
+        allocateForItem()
+        loading.value = false
+    }
+})
 
 </script>
 
