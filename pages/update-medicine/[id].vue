@@ -524,7 +524,7 @@ async function deleteMedicines() {
       method: "DELETE",
     };
     const url = `/admin-api/meds/medicine/${slug}`;
-    const response = useBaseFetch(url, options)
+    const response = await useBaseFetch(url, options)
     if (!response.ok) {
       throw new Error(response.statusText);
     }
