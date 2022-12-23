@@ -211,6 +211,7 @@
 <script setup>
 //for showing the danger button
 const show = ref(false);
+const apiURL = useApiURL()
 const manufacturer = ref({
   id: 0,
   name: "",

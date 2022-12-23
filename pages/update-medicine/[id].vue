@@ -99,6 +99,7 @@
                     </select>
                     <div class="fastedit" style="display: flex">
                       <a
+                        :href="`../update-manufacturer/${medicineInfo.manufacturer.id}`"
                         style="display: block; margin-left: auto"
                         class="ml-2 mt-2"
                       >
@@ -601,22 +602,36 @@ const manufacturerList = ref([]);
 const medicineInfo = ref({
   slug: "",
   brand_name: "",
-  generic_name: "",
-  manufacturer: "",
-  packaging: "",
+  generic_name: {
+    salt_code: "",
+    name: "",
+    strength: "",
+    added_datetime: null,
+  },
+  manufacturer: {
+    id: 0,
+    name: "",
+    reference_code: "",
+    image: "",
+    manufacturer_address: "",
+    marketer_address: "",
+    datetime_created: "",
+    number_of_medicines: 0,
+  },
+  packaging: null,
   sales_price: 0.0,
   cost_price: 0.0,
   mrp: 0.0,
-  dosage_form: "",
+  dosage_form: null,
   strength_mg: 0,
-  unit: "",
+  unit: null,
   available: false,
   custom: 0.0,
   bonus: "0+0",
   _class: 0,
   datetime_added: "",
   extras: {
-    mrp: 0,
+    mrp: null,
     image: "",
     unit_1: "",
     unit_2: "",
