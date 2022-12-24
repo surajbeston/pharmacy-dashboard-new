@@ -99,7 +99,7 @@
                     </select>
                     <div class="fastedit" style="display: flex">
                       <a
-                        :href="`../update-manufacturer/${medicineInfo.manufacturer.id}`"
+                        :href="`../manufacturer/${medicineInfo.manufacturer.id}`"
                         style="display: block; margin-left: auto"
                         class="ml-2 mt-2"
                       >
