@@ -6,7 +6,6 @@
                 <div class="mb-5">
                     <!-- Title -->
                     <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Manufacturers</h1>
-
                 </div>
                 <div class="flex flex-row flex-wrap">
                     <button v-for="alphabet in alphabets" :key="alphabet"
@@ -70,7 +69,7 @@ const apiURL = useApiURL()
 const currentInitialLetters = ref('a')
 const alphabets = ref(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'])
 
-const  manufacturers = ref([])
+const manufacturers = ref([])
 const loading = ref(true)
 
 
@@ -82,10 +81,15 @@ onMounted(() => {
 async function retrieveManufacturers(alphabet) {
     loading.value = true
     currentInitialLetters.value = alphabet
-    manufacturers.value = await useBaseFetch(`/meds/manufacturer/with_initial/`, {
-        method: 'POST',
-        body: {'initial_letters': alphabet}
-    })
+    try {
+        manufacturers.value = await useBaseFetch(`/meds/manufacturer/with_initial/`, {
+            method: 'POST',
+            body: { 'initial_letters': alphabet }
+        })
+    }
+    catch(err) {
+        console.log(err.response)
+    }
     loading.value = false
 }
 
@@ -98,6 +102,6 @@ function getImage(image) {
     }
 }
 function getEditLink(manufacturer) {
-    return `/editManufacturer?manufacturer=${manufacturer.id}/`
+    return `/manufacturer/${manufacturer.id}/`
 }
 </script>

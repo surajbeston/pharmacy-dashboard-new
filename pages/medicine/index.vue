@@ -294,7 +294,7 @@ function getImage(image) {
 }
 
 function getEditLink(medicine) {
-    return `/update-medicine/${medicine.slug}`
+    return `/medicine/${medicine.slug}`
 }
 
 </script>
