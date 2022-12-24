@@ -18,6 +18,7 @@
                     <span> Update user 👤 </span>
 
                     <svg
+                      v-if="Object.keys(user).length === 0"
                       class="animate-spin w-6 h-6 fill-current shrink-0"
                       viewBox="0 0 16 16"
                     >
@@ -37,11 +38,12 @@
                   <div class="flex items-center">
                     <div>
                       <button
+                        @click="openDeleteModal = true"
                         class="btn !cursor-pointer bg-white border-gray-200 hover:border-gray-300 text-red-500 hover:text-red-600"
                       >
                         Delete
                       </button>
-                      <div class="hidden">
+                      <div v-if="openDeleteModal">
                         <!-- modal backdrop -->
                         <div
                           class="fixed inset-0 bg-gray-900 bg-opacity-30 z-50 transition-opacity"
@@ -94,23 +96,25 @@
                                   class="flex flex-wrap justify-end space-x-2"
                                 >
                                   <button
-                                    class="btn-sm border-gray-200 hover:border-gray-300 text-gray-600"
+                                    @click="openDeleteModal = false"
+                                    class="btn-sm !border-gray-200 hover:!border-gray-300 text-gray-600"
                                   >
                                     cancel
                                   </button>
                                   <button
+                                    @click="deleteUser(user.id)"
                                     class="btn-sm bg-red-500 hover:bg-red-600 text-white"
                                   >
                                     <span> yes, delete it </span>
 
-                                    <svg
+                                    <!-- <svg
                                       class="animate-spin w-4 h-4 fill-current shrink-0"
                                       viewbox="0 0 16 16"
                                     >
                                       <path
                                         d="m8 16a7.928 7.928 0 01-3.428-.77l.857-1.807a6.006 6.006 0 0014 8c0-3.309-2.691-6-6-6a6.006 6.006 0 00-5.422 8.572l-1.806.859a7.929 7.929 0 010 8c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"
                                       />
-                                    </svg>
+                                    </svg> -->
                                   </button>
                                 </div>
                               </div>
@@ -136,6 +140,7 @@
                       class="form-input w-full md:w-96"
                       maxlength="15"
                       type="text"
+                      v-model="user.phone_number"
                     />
                   </div>
 
@@ -148,7 +153,7 @@
                     >
                     <input
                       class="form-input w-full md:w-96"
-                      x-model="formData.email"
+                      v-model="user.email"
                       type="text"
                     />
                   </div>
@@ -158,7 +163,7 @@
                 <div class="mb-10">
                   <div>
                     <button
-                      class="btn border-indigo-300 hover:border-indigo-600 text-indigo-500"
+                      class="btn !border-indigo-300 hover:!border-indigo-600 text-indigo-500"
                     >
                       Change password
                     </button>
@@ -283,7 +288,7 @@
                     <input
                       class="form-input w-full md:w-96"
                       maxlength="200"
-                      x-model="formData.full_name"
+                      v-model="user.full_name"
                       type="text"
                     />
                   </div>
@@ -301,7 +306,11 @@
 
                 <div class="mb-5">
                   <label class="flex items-center">
-                    <input type="checkbox" class="form-checkbox" />
+                    <input
+                      type="checkbox"
+                      v-model="user.is_active"
+                      class="form-checkbox"
+                    />
                     <span class="text-sm ml-2 font-bold">Active</span>
                   </label>
                   <div class="text-sm ml-6">
@@ -356,7 +365,12 @@
                     <label class="block text-sm font-medium mb-1" for="success"
                       >Last login</label
                     >
-                    <input class="form-input w-60" type="datetime-local" />
+                    <input
+                      class="form-input w-60"
+                      :value="formatDate(user.last_login)"
+                      @change="(event) => (user.last_login = event.value)"
+                      type="datetime-local"
+                    />
                   </div>
 
                   <div class="text-xs mt-1 text-red-500" x-text="err.msg"></div>
@@ -366,13 +380,19 @@
                     <label class="block text-sm font-medium mb-1" for="success"
                       >Date joined <span class="text-red-500">*</span></label
                     >
-                    <input class="form-input w-60" type="datetime-local" />
+                    <input
+                      class="form-input w-60"
+                      :value="formatDate(user.date_joined)"
+                      @change="(event) => (user.date_joined = event.value)"
+                      type="datetime-local"
+                    />
                   </div>
 
                   <div class="text-xs mt-1 text-red-500"></div>
                 </div>
 
                 <button
+                  @click="updateUser(user.id)"
                   class="btn bg-indigo-500 hover:bg-indigo-600 text-white float-right mb-10 px-10"
                 >
                   <span> Update </span>
@@ -398,10 +418,37 @@
 <script setup>
 const { id } = useRoute().params;
 const user = ref({});
+const openDeleteModal = ref(false);
+
+onMounted(() => {
+  getUser();
+});
+
 async function getUser() {
-  user.value = await useBaseFetch(`/account/users/${id}`);
+  user.value = await useBaseFetch(`/admin-api/meds/myuser/${id}`);
+  console.log(user.value);
 }
-getUser();
+
+async function updateUser(id) {
+  console.log(id);
+  const res = await useBaseFetch(`/admin-api/meds/myuser/${id}/`, {
+    method: "put",
+  });
+  console.log(res);
+}
+
+function formatDate(date) {
+  if (date) {
+    date = date.substring(0, 16);
+  }
+  return date;
+}
+async function deleteUser(id) {
+  const res = await useBaseFetch(`/admin-api/meds/myuser/${id}`);
+  console.log(res);
+  navigateTo("/users");
+  openDeleteModal = false;
+}
 </script>
 
 <style scoped></style>

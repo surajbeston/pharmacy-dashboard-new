@@ -23,6 +23,7 @@
                 <input
                   class="form-input outline-none w-full md:w-96"
                   maxlength="15"
+                  v-model="user.phone_number"
                   type="text"
                 />
               </div>
@@ -37,6 +38,7 @@
                 <input
                   class="form-input outline-none w-full md:w-96"
                   type="text"
+                  v-model="user.email"
                 />
               </div>
 
@@ -50,6 +52,7 @@
                 <input
                   class="form-input outline-none w-full md:w-96"
                   type="text"
+                  v-model="user.password"
                 />
               </div>
 
@@ -70,6 +73,7 @@
                 <input
                   class="form-input w-full outline-none md:w-96"
                   maxlength="200"
+                  v-model="user.full_name"
                   type="text"
                 />
               </div>
@@ -85,7 +89,11 @@
 
             <div class="mb-5">
               <label class="flex items-center">
-                <input type="checkbox" class="form-checkbox outline-none" />
+                <input
+                  type="checkbox"
+                  v-model="user.is_active"
+                  class="form-checkbox outline-none"
+                />
                 <span class="text-sm ml-2 font-bold">Active</span>
               </label>
               <div class="text-sm ml-6">
@@ -96,7 +104,11 @@
 
             <div class="mb-5">
               <label class="flex items-center">
-                <input type="checkbox" class="form-checkbox" />
+                <input
+                  type="checkbox"
+                  v-model="user.is_staff"
+                  class="form-checkbox"
+                />
                 <span class="text-sm ml-2 font-bold"
                   >Representative status</span
                 >
@@ -108,7 +120,11 @@
 
             <div class="mb-10">
               <label class="flex items-center">
-                <input type="checkbox" class="form-checkbox" />
+                <input
+                  type="checkbox"
+                  v-model="user.is_superuser"
+                  class="form-checkbox"
+                />
                 <span class="text-sm ml-2 font-bold">Superuser status</span>
               </label>
               <div class="text-sm ml-6">
@@ -131,6 +147,7 @@
                   >Last login</label
                 >
                 <input
+                  v-model="user.last_login"
                   class="form-input outline-none w-60"
                   type="datetime-local"
                 />
@@ -144,6 +161,7 @@
                   >Date joined <span class="text-red-500">*</span></label
                 >
                 <input
+                  v-model="user.date_joined"
                   class="form-input outline-none w-60"
                   type="datetime-local"
                 />
@@ -153,6 +171,7 @@
             </div>
 
             <button
+              @click="handleSubmit"
               class="btn bg-indigo-500 hover:bg-indigo-600 text-white float-right mb-10 px-10"
             >
               <span> Save </span>
@@ -173,6 +192,12 @@
   </div>
 </template>
 
-<script setup></script>
+<script setup>
+const user = ref({});
+
+async function handleSubmit() {
+  console.log(user.value);
+}
+</script>
 
 <style scoped></style>

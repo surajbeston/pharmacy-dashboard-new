@@ -16,11 +16,18 @@
           >
             <select
               id="pharmacy"
-              class="form-select outline-none max-w-[200px]"
+              v-model="selectedPharmacy"
+              @change="filterUsersBYPharmacy()"
+              class="form-select !pr-3 outline-none max-w-[200px]"
             >
               <option value="">Select Pharmacy</option>
 
-              <option>badu</option>
+              <option
+                :value="pharmacy.id"
+                v-for="pharmacy in pharmacies.results"
+              >
+                {{ pharmacy.name }}
+              </option>
             </select>
 
             <!-- Delete button -->
@@ -121,6 +128,7 @@
             <!-- filter button  -->
             <div class="relative inline-flex">
               <button
+                @click="filterModalToggle = !filterModalToggle"
                 class="btn bg-white !border-gray-200 hover:!border-gray-300 text-gray-500 hover:text-gray-600"
                 aria-haspopup="true"
               >
@@ -132,7 +140,8 @@
                 </svg>
               </button>
               <div
-                class="hidden origin-top-left z-10 absolute top-full right-0 min-w-[14rem] bg-white border border-gray-200 pt-1.5 rounded shadow-lg overflow-hidden mt-1"
+                v-if="filterModalToggle === true"
+                class="origin-top-left z-10 absolute top-full right-0 min-w-[14rem] bg-white border border-gray-200 pt-1.5 rounded shadow-lg overflow-hidden mt-1"
               >
                 <p
                   class="text-xs font-semibold text-gray-400 uppercase pt-1.5 pb-2 px-4"
@@ -142,25 +151,45 @@
                 <ul class="mb-4">
                   <li class="py-1 px-3">
                     <label class="flex items-center">
-                      <input type="checkbox" class="form-checkbox" />
+                      <input
+                        type="checkbox"
+                        value="is_active"
+                        v-model="filterSelected"
+                        class="form-checkbox"
+                      />
                       <span class="text-sm font-medium ml-2">Is Active</span>
                     </label>
                   </li>
                   <li class="py-1 px-3">
                     <label class="flex items-center">
-                      <input type="checkbox" class="form-checkbox" />
+                      <input
+                        type="checkbox"
+                        value="is_superuser"
+                        v-model="filterSelected"
+                        class="form-checkbox"
+                      />
                       <span class="text-sm font-medium ml-2">Is Admin</span>
                     </label>
                   </li>
                   <li class="py-1 px-3">
                     <label class="flex items-center">
-                      <input type="checkbox" class="form-checkbox" />
+                      <input
+                        type="checkbox"
+                        value="is_staff"
+                        v-model="filterSelected"
+                        class="form-checkbox"
+                      />
                       <span class="text-sm font-medium ml-2">Is Staff</span>
                     </label>
                   </li>
                   <li class="py-1 px-3">
                     <label class="flex items-center">
-                      <input type="checkbox" class="form-checkbox" />
+                      <input
+                        type="checkbox"
+                        value="is_verified"
+                        v-model="filterSelected"
+                        class="form-checkbox"
+                      />
                       <span class="text-sm font-medium ml-2">Is Verified</span>
                     </label>
                   </li>
@@ -169,6 +198,7 @@
                   <ul class="flex items-center justify-between">
                     <li>
                       <button
+                        @click="clearFilter"
                         class="btn-xs bg-white !border-gray-200 hover:!border-gray-300 text-gray-500 hover:!text-gray-600"
                       >
                         Clear
@@ -176,6 +206,7 @@
                     </li>
                     <li>
                       <button
+                        @click="applyFilter"
                         class="btn-xs bg-indigo-500 hover:bg-indigo-600 text-white"
                       >
                         Apply filter
@@ -209,9 +240,11 @@
           <div class="px-5 py-4">
             <h2 class="font-semibold flex items-center gap-1 text-gray-800">
               All Users
-              <span v-if="users.count" class="ml-2 text-gray-400 font-medium">{{
-                users.count
-              }}</span>
+              <span
+                v-if="loading === false"
+                class="ml-2 text-gray-400 font-medium"
+                >{{ displayUsers.count }}</span
+              >
 
               <svg
                 v-else
@@ -227,6 +260,7 @@
 
           <!-- Table -->
           <div class="overflow-x-auto">
+            <span>{{ selectedForDelete }}</span>
             <table class="table-auto w-full divide-y divide-gray-200">
               <!-- Table header -->
               <thead
@@ -245,9 +279,7 @@
                       />
                     </label>
                   </th>
-                  <!-- <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-                            <div class="font-semibold text-left">I.D.</div>
-                        </th> -->
+
                   <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                     <div class="font-semibold text-left">Name</div>
                   </th>
@@ -272,7 +304,7 @@
               <!-- Table body -->
               <tbody class="text-sm">
                 <!-- Row -->
-                <tr v-for="user in users.results" class="">
+                <tr v-for="user in displayUsers.results" class="">
                   <td
                     class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px"
                   >
@@ -280,6 +312,9 @@
                       <label class="inline-flex">
                         <span class="sr-only">Select</span>
                         <input
+                          :value="user.id"
+                          v-model="selectedForDelete"
+                          :checked="selectAllUser"
                           class="table-item form-checkbox"
                           type="checkbox"
                         />
@@ -403,7 +438,7 @@
         <!-- <%= require('html-loader!./partials/pagination-classic.html') %> -->
 
         <div
-          v-show="!users.values"
+          v-show="!displayUsers.values"
           class="px-6 py-8 bg-gray-50 border border-gray-200 rounded-sm"
         >
           <div
@@ -441,15 +476,15 @@
             <div class="text-sm text-gray-500 text-center sm:text-left">
               Showing
               <span class="font-medium text-gray-600"
-                >{{ showingUpTo || 0 }}
+                >{{ showingUpToValue || 0 }}
               </span>
               to
               <span class="font-medium text-gray-600">
-                {{ parseInt(showingUpTo) + 10 || 10 }}
+                {{ parseInt(showingUpToValue) + 10 || 10 }}
               </span>
               of
               <span class="font-medium text-gray-600">
-                {{ users.count }}
+                {{ displayUsers.count }}
               </span>
               results
             </div>
@@ -461,16 +496,36 @@
 </template>
 
 <script setup>
+const loading = ref(false);
 const users = ref([]);
-const showingUpTo = ref(0);
+const displayUsers = ref([]);
+const selectedPharmacy = ref("");
+const pharmacies = ref([]);
+const showingUpToValue = ref(0);
+const filterModalToggle = ref(false);
+const filterSelected = ref([]);
+const selectedForDelete = ref([]);
+const selectAllUser = ref(false);
 
 onMounted(() => {
   getUsersList(0);
+  getPharmacies();
 });
 
+async function getPharmacies() {
+  pharmacies.value = await useBaseFetch(
+    `/admin-api/meds/pharmacy/?limit=10000&offset=0`
+  );
+}
+
 async function getUsersList(offset) {
-  showingUpTo.value = offset;
-  users.value = await useBaseFetch(`/account/users/?limit=10&offset=${offset}`);
+  loading.value = true;
+  showingUpToValue.value = offset;
+  users.value = await useBaseFetch(
+    `/admin-api/meds/myuser/?limit=10&offset=${offset}`
+  );
+  loading.value = false;
+  displayUsers.value = users.value;
 }
 function getFormattedDate(strDate) {
   const date = new Date(strDate);
@@ -479,6 +534,32 @@ function getFormattedDate(strDate) {
 function getOffset(url) {
   const offset = url.split("=")[2];
   getUsersList(offset);
+}
+async function filterUsersBYPharmacy() {
+  if (selectedPharmacy.value === "") {
+    displayUsers.value = users.value;
+  } else {
+    loading.value = true;
+    displayUsers.value = await useBaseFetch(
+      `/admin-api/meds/myuser/?pharmacy=${selectedPharmacy.value}`
+    );
+
+    loading.value = false;
+  }
+}
+function clearFilter() {
+  filterSelected.value.length = 0;
+  filterModalToggle.value = false;
+
+  getUsersList(0);
+}
+async function applyFilter() {
+  loading.value = true;
+  let url = "/admin-api/meds/myuser/?";
+  filterSelected.value.map((sel) => (url += `${sel}=true&`));
+  displayUsers.value = await useBaseFetch(url);
+  loading.value = false;
+  filterModalToggle.value = false;
 }
 </script>
 
