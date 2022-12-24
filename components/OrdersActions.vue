@@ -11,7 +11,7 @@
             </div>
         </div>
         <div>
-            <PharmacyDropdown @selected-pharmacy-id="filterByPharmacy"></PharmacyDropdown>
+            <Dropdown :objects="pharmacies" name-attribute="name" value-attribute="id" @selected-object="filterByPharmacy" ></Dropdown>
         </div>
         <div class="relative">
 
@@ -50,6 +50,7 @@
 </template>
 
 <script setup>
+import Dropdown from './utils/Dropdown.vue';
 import ManufacturerDropdown from './utils/ManufacturerDropdown.vue';
 import PharmacyDropdown from './utils/PharmacyDropdown.vue';
 
@@ -60,6 +61,8 @@ const emit = defineEmits(["filterUrl"])
 const selectedOption = ref('All Time')
 
 const dateSelectOptions = ref(['Today', 'Last 3 Days', 'Last 7 Days', 'Last 1 Month', 'Last 12 Months', 'All Time'])
+
+const {results: pharmacies} = await useBaseFetch(`/admin-api/meds/pharmacy/?limit=10000&offset=0`)
 
 const showOptions = ref(false)
 const manufacturers = ref([])
