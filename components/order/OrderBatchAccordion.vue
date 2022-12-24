@@ -58,7 +58,6 @@
                                 </div>
                             </td>
                         </tr>
-
                         <tr id="description-01" role="region" v-show="openAccordion">
                             <td colspan="10" class="px-2 first:pl-5 last:pr-5 py-3">
                                 <div>
@@ -74,10 +73,10 @@
                     </tbody>
                 </table>
                 <div class="flex justify-center m-5">
-                    <button @click="autoAllocate = true"
+                    <button v-show="!accumulated" @click="autoAllocate = true"
                         class="btn bg-indigo-500 hover:bg-indigo-600 text-white">Allocate for all Medicines</button>
                 </div>
-                <div v-show="accumulated"></div>
+                <OrderBatchConfirmTable v-show="accumulated" :order-items="currentOrder.orderitem_set" :order-id="currentOrder.id"></OrderBatchConfirmTable>
             </div>
         </div>
     </div>
@@ -121,13 +120,9 @@ watch(() => props.order, (newOrder) => {
 
 function accumulateAllocation(allocated) {
     if (allocated){
-        var allocatedArr = []
-        currentOrder.value.orderitem_set.forEach((item) => {
-            allocatedArr.push = item.allocated
-        })
         var localAccumulated = true
-        allocatedArr.forEach((value) => {
-            localAccumulated = localAccumulated && value
+        currentOrder.value.orderitem_set.forEach((item) => {
+            localAccumulated = localAccumulated && item.allocated
         })
         accumulated.value = localAccumulated
     }

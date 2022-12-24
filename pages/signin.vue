@@ -107,15 +107,17 @@
 
 const phoneNumber = ref('')
 const password = ref('')
+const apiURL = useApiURL()
 
 function signin(){
     console.log(phoneNumber.value)
     console.log(password.value)
 
-    $fetch('https://pharmacy-ecom.fly.dev/auth/token/login/', {
+    $fetch(`${apiURL.value}/auth/token/login/`, {
         method: 'POST',
         body: {'phone_number': phoneNumber.value, 'password': password.value}
     }).then((response) => {
+        console.log(response)
         localStorage.setItem('auth_token', response.auth_token)
         const router = useRouter();
         router.push({ path: "/" });
@@ -124,4 +126,5 @@ function signin(){
         console.log(err.response)
     })
 }
+
 </script>

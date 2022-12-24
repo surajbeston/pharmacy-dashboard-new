@@ -26,7 +26,7 @@
             <button class="btn bg-indigo-500 hover:bg-indigo-600 text-white">Save</button>
         </div>
         <!-- <pre>{{ order }}</pre> -->
-        <ConfirmDeleteModal :delete-info="deleteInfo" :delete-question="deleteQuestion" :show-modal="showDeleteModel" :delete-url="deleteUrl"></ConfirmDeleteModal>
+        <ConfirmDeleteModal :delete-info="deleteInfo" :delete-question="deleteQuestion" :show-modal="showDeleteModel" :delete-url="deleteUrl"  @cancelled="cancel"></ConfirmDeleteModal>
     </div>
 </template>
 
@@ -64,10 +64,14 @@ const deleteUrl = ref('')
 const showDeleteModel = ref(false)
 
 function initiateDelete(){
+    
     deleteInfo.value = `Deleting order number #${order.value.id} with ${order.value.orderitem_set.length} items.`
     deleteUrl.value = `/admin-api/meds/order/${order.value.id}/`
     showDeleteModel.value = true
 }
 
+function cancel(){
+    showDeleteModel.value = false
+}
 
 </script>

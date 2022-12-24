@@ -102,7 +102,6 @@
                         </div>
                     </td>
                 </tr>
-
             </tbody>
         </table>
         <div v-if="loading" class=" w-full ml-1 m-5">

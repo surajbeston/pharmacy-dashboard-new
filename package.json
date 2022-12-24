@@ -13,6 +13,7 @@
     "sass-loader": "^13.2.0"
   },
   "dependencies": {
-    "@nuxtjs/tailwindcss": "^6.1.3"
+    "@nuxtjs/tailwindcss": "^6.1.3",
+    "vue-fuse": "^4.1.1"
   }
 }

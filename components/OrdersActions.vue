@@ -111,7 +111,7 @@ watch(() => pharmacyFilterString.value + dateFilterString.value, () => {
     console.log(pharmacyFilterString.value)
     console.log(dateFilterString.value)
 
-    emit("filterUrl", `/admin-api/meds/orderbatch/?${pharmacyFilterString.value}&${dateFilterString.value}`)
+    emit("filterUrl", `/admin-api/meds/order/?${pharmacyFilterString.value}&${dateFilterString.value}`)
 })
 
 function hideOptions() {

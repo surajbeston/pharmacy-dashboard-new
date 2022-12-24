@@ -227,7 +227,7 @@ async function deleteSelected() {
     deleting.value = true
     for (var orderBatch of orderBatches.value) {
         if (orderBatch.selected) {
-            await useBaseFetch(`/admin-api/meds/orderbatch/${orderBatch.id}/`, {
+            await useBaseFetch(`/admin-api/meds/order/${orderBatch.id}/`, {
                 method: 'DELETE'
             })
         }

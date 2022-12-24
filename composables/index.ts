@@ -3,14 +3,14 @@ export const useCurrentPage = () => {
 };
 
 export const useApiURL = () =>
-  useState("apiURL", () => "https://pharmacy-ecom.fly.dev");
+  useState("apiURL", () => "http://localhost:8000");
 
 export const useBaseFetch = (url: string, options = {}) => {
   if (!options.headers) {
     var token = localStorage.getItem("auth_token");
     if (token) options.headers = { Authorization: `Token ${token}` };
   }
-  return $fetch(`https://pharmacy-ecom.fly.dev${url}`, options);
+  return $fetch(`http://localhost:8000${url}`, options);
 };
 
 export const useNextPage = () => useState("nextPage", () => null);
