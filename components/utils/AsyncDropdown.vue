@@ -1,6 +1,6 @@
 <template>
     <div class="w-80">
-        <div class="relative inline-flex w-full">
+        <div class="relative inline-flex w-full z-20">
             <button tabindex="0" @blur="closeDropdown()" @click="openDropdown = !openDropdown"
                 class="btn w-full flex  min-w-44 bg-white border-gray-200 button-border hover:border-gray-300 text-gray-500 hover:text-gray-600 make-difference"
                 aria-label="Select date range" aria-haspopup="true">
@@ -17,9 +17,9 @@
                 leave-to-class="opacity-0">
 
                 <div v-show="openDropdown"
-                    class="z-10 absolute top-full left-0 w-full bg-white border border-gray-200 pb-1.5 rounded shadow-lg overflow-scroll mt-1 max-h-[300px]">
+                    class="z-20 absolute top-full left-0 w-full bg-white border border-gray-200 pb-1.5 rounded shadow-lg overflow-scroll mt-1 max-h-[300px]">
                     <div class="relative">
-                        <input v-model="search" @focus="focusOnFilter()" @blur="focusedOnFilter = false" id="small"
+                        <input v-model="initialText" @focus="focusOnFilter()" @blur="focusedOnFilter = false" id="small"
                             class="form-input w-full px-2 py-1 sticky top-0 shadow-sm" type="text"
                             placeholder="Filter Text" />
                         <div v-for="object in listObjects" :key="object[valueAttribute]"
@@ -29,7 +29,7 @@
                                 @click="selectObject(object[valueAttribute])">
                                 <span :class="{ 'text-indigo-500': object[valueAttribute] == selectedObject }">{{
                                         object[nameAttribute]
-                                }}</span>
+                                }} ({{ object[valueAttribute] }})</span>
                                 <svg class="shrink-0 ml-2 fill-current "
                                     :class="{ 'text-indigo-500': object[valueAttribute] == selectedObject }" width="12"
                                     height="9" viewBox="0 0 12 9">
@@ -46,45 +46,48 @@
 </template>
 
 <script setup>
-import { useVueFuse, VueFuse } from "vue-fuse"
 
 const emit = defineEmits(["selectedObject"])
-const props = defineProps(["objects", "showText", "nameAttribute", "valueAttribute", "initialObject"])
+const props = defineProps(["objectsUrl", "showText", "nameAttribute", "valueAttribute", "initialObject"])
 const selectedObject = ref(null)
 const loaded = ref(true)
 
 const openDropdown = ref(false)
 
-
-const { search, results, noResults } = useVueFuse(props.objects, { keys: [props.nameAttribute] })
+const initialText = ref('')
 
 const listObjects = ref([])
 
 const selectedObjectName = ref('Select Item')
 
-watch(results, (res) => {
-    if (res.length > 0) {
-        listObjects.value = res
-    }
-    else {
-        listObjects.value = props.objects
+watch(initialText, async (text) => {
+    if (text) {
+        try {
+            listObjects.value = await useBaseFetch(props.objectsUrl, {
+                method: 'POST',
+                body: { 'initial_letters': text }
+            })
+        }
+        catch (err) {
+            console.log(err.response)
+        }
     }
 })
 
 onMounted(() => {
-    listObjects.value = props.objects
-    if (props.initialObject){
+    if (props.initialObject) {
         selectedObject.value = props.initialObject[props.valueAttribute]
         selectedObjectName.value = props.initialObject[props.nameAttribute]
     }
+    initialText.value = "a"
 })
 
 function selectObject(objectValue) {
     selectedObject.value = objectValue
     emit("selectedObject", objectValue)
-    var obj = props.objects.filter((obj) => {
-            return obj[props.valueAttribute] == selectedObject.value
-        })
+    var obj = listObjects.value.filter((obj) => {
+        return obj[props.valueAttribute] == selectedObject.value
+    })
     selectedObjectName.value = obj[0][props.nameAttribute]
     openDropdown.value = false
 }
@@ -111,7 +114,7 @@ function closeDropdown() {
     justify-content: space-between;
 }
 
-.button-border{
+.button-border {
     border-color: rgb(229 231 235 / var(--tw-border-opacity));
 }
 </style>

@@ -56,7 +56,7 @@
 
 const showDeleteModal = ref(false)
 const props = defineProps(["deleteQuestion", "deleteInfo", "showModal", "deleteUrl"])
-const emit = defineEmits(["delete", "cancelled"])
+const emit = defineEmits(["deleted", "cancelled"])
 
 const deleting = ref(false)
 const router = useRouter()
@@ -68,12 +68,12 @@ async function deleteSelected() {
         method: 'DELETE'
     })
     deleting.value = false
-    router.push("/order")
+    emit('deleted', true)
 }
 
 
 function cancel() {
-    emit("cancelled", false)
+    emit("cancelled", true)
 }
 
 </script>
