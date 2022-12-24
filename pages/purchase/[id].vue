@@ -8,13 +8,18 @@
 import Dropdown from '~~/components/utils/Dropdown.vue';
 const dropdownLoaded = ref(false)
 
-const suppliers = ref([])
+
+const {results: suppliers  } = await useBaseFetch(`/admin-api/meds/supplier/?limit=100000`)
+
+// watch(response, (res) =>{
+//     console.log(res)
+// })
 
 async function getSuppliers() {
-    var response = await useBaseFetch(`/admin-api/meds/supplier/?limit=100000`)
-    suppliers.value = response.results
-    console.log(response)
-    dropdownLoaded.value = true 
+    // var response = 
+    // suppliers.value = response.results
+    // console.log(response)
+    // dropdownLoaded.value = true 
 }
 
 function selectSupplier(supplierId){
@@ -24,7 +29,7 @@ function selectSupplier(supplierId){
 
 
 onMounted(() => {
-    getSuppliers()
+    
 })
 
 </script>

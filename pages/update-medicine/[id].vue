@@ -76,7 +76,7 @@
                     >
                     <select id="manufacturer-item" class="w-full form-select">
                       <option selected>{{ medicineInfo.manufacturer.name }}</option>
-                      <option v-for="manufacturer in manufacturerList">
+                      <option v-for="manufacturer in manufacturerList" :key="manufacturer.id">
                         {{ manufacturer.name }}
                       </option>
                     </select>
@@ -129,7 +129,7 @@
                     >
                     <select id="dosage-item" class="w-full form-select">
                       <option selected>-------</option>
-                      <option v-for="dosage in dosageFormList">
+                      <option v-for="dosage in dosageFormList" :key="dosage">
                         {{ dosage }}
                       </option>
                     </select>
@@ -435,7 +435,7 @@ const dosageFormList = [
 // const medicineInfo = ref([]);
 const route = useRoute();
 const slug = route.params.id;
-const apiURL = ref(useApiURL());
+const apiURL = useApiURL();
 const manufacturerList = ref([]);
 const medicineInfo = ref({
   slug: "",

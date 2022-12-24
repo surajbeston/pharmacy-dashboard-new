@@ -117,8 +117,11 @@ function signin(){
         method: 'POST',
         body: {'phone_number': phoneNumber.value, 'password': password.value}
     }).then((response) => {
-        console.log(response)
-        localStorage.setItem('auth_token', response.auth_token)
+        var token = useCookie('auth_token', {
+            default: () => null,
+            watch: true
+        })
+        token.value = response.auth_token
         const router = useRouter();
         router.push({ path: "/" });
     }).catch((err) => {

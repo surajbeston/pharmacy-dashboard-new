@@ -1,21 +1,11 @@
 <template>
-    <!-- <div>
-        <select id="object" class="form-select mt-2" @change="selectObject()" ref="selectedObject">
-            <option value="">{{ showText }}</option>
-            <option v-for="object in objects" :key="object[valueAttribute]" :value="object[valueAttribute]">
-            {{
-                    object[nameAttribute]
-            }}</option>
-        </select>
-    </div> -->
-
     <div class="w-80">
-        <div v-if="loaded" class="relative inline-flex w-full">
-            <button @click="openDropdown = !openDropdown"
-                class="btn w-full justify-between min-w-44 bg-white border-gray-200 hover:border-gray-300 text-gray-500 hover:text-gray-600"
+        <div class="relative inline-flex w-full">
+            <button tabindex="0" @blur="closeDropdown()" @click="openDropdown = !openDropdown"
+                class="btn w-full flex  min-w-44 bg-white border-gray-200 hover:border-gray-300 text-gray-500 hover:text-gray-600 make-difference"
                 aria-label="Select date range" aria-haspopup="true">
-                <span class="flex items-center">
-                    <span>Select Object</span>
+                <span class="flex ">
+                    <span>{{ selectedObjectName }}</span>
                 </span>
                 <svg class="shrink-0 ml-1 fill-current text-gray-400" width="11" height="7" viewBox="0 0 11 7">
                     <path d="M5.4 6.8L0 1.4 1.4 0l4 4 4-4 1.4 1.4z" />
@@ -27,25 +17,30 @@
                 leave-to-class="opacity-0">
 
                 <div v-show="openDropdown"
-                    class="z-10 absolute top-full left-0 w-full bg-white border border-gray-200 py-1.5 rounded shadow-lg overflow-scroll mt-1 max-h-[300px]">
-                    <input v-model="search" id="small" class="form-input w-full px-2 py-1" type="text"
-                        placeholder="Filter Text" />
-                    <div v-for="object in results" :key="object[valueAttribute]"
-                        class="font-medium text-sm text-gray-600 divide-y divide-gray-200" x-ref="options">
-                        <button tabindex="0"
-                            class="flex items-center justify-between w-full hover:bg-gray-50 py-2 px-3 cursor-pointer"
-                            @click="selectObject()">
-                            <span>{{ object[nameAttribute] }}</span>
-                            <svg class="shrink-0 ml-2 fill-current text-indigo-400" width="12" height="9"
-                                viewBox="0 0 12 9">
-                                <path
-                                    d="M10.28.28L3.989 6.575 1.695 4.28A1 1 0 00.28 5.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28.28z" />
-                            </svg>
-                        </button>
+                    class="z-10 absolute top-full left-0 w-full bg-white border border-gray-200 pb-1.5 rounded shadow-lg overflow-scroll mt-1 max-h-[300px]">
+                    <div class="relative">
+                        <input v-model="search" @focus="focusOnFilter()" @blur="focusedOnFilter = false" id="small"
+                            class="form-input w-full px-2 py-1 sticky top-0 shadow-sm" type="text"
+                            placeholder="Filter Text" />
+                        <div v-for="object in listObjects" :key="object[valueAttribute]"
+                            class="font-medium text-sm text-gray-600 divide-y divide-gray-200" x-ref="options">
+                            <button tabindex="0"
+                                class="flex items-center justify-between w-full hover:bg-gray-50 py-2 px-3 cursor-pointer"
+                                @click="selectObject(object[valueAttribute])">
+                                <span :class="{ 'text-indigo-500': object[valueAttribute] == selectedObject }">{{
+                                        object[nameAttribute]
+                                }}</span>
+                                <svg class="shrink-0 ml-2 fill-current "
+                                    :class="{ 'text-indigo-500': object[valueAttribute] == selectedObject }" width="12"
+                                    height="9" viewBox="0 0 12 9">
+                                    <path
+                                        d="M10.28.28L3.989 6.575 1.695 4.28A1 1 0 00.28 5.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28.28z" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </transition>
-            <pre>{{  results  }}</pre>
         </div>
     </div>
 </template>
@@ -61,22 +56,58 @@ const loaded = ref(true)
 const openDropdown = ref(false)
 
 
-const { search, results, noResults } = computed(() => {
-    console.log("in computed")
-    useVueFuse(objects, { keys: [props.nameAttribute] })
+const { search, results, noResults } = useVueFuse(props.objects, { keys: [props.nameAttribute] })
+
+const listObjects = ref([])
+
+const selectedObjectName = computed(() => {
+    if (selectedObject.value != null) {
+        var obj = props.objects.filter((obj) => {
+            return obj[props.valueAttribute] == selectedObject.value
+        })
+        return obj[0][props.nameAttribute]
+    }
+    return 'Select Item'
 })
 
-const objects = computed(() => props.objects)
+watch(results, (res) => {
+    if (res.length > 0) {
+        listObjects.value = res
+    }
+    else {
+        listObjects.value = props.objects
+    }
+})
 
-function selectObject() {
-    // emit("selectedObject", selectedObject.value.value)
+onMounted(() => {
+    listObjects.value = props.objects
+})
+
+function selectObject(objectValue) {
+    selectedObject.value = objectValue
+    emit("selectedObject", objectValue)
+    openDropdown.value = false
 }
 
-watch(() => props.objects, (objects) => {
-    console.log(search)
-    console.log(results)
-})
+const focusedOnFilter = ref(false)
 
+function focusOnFilter() {
+    focusedOnFilter.value = true
+}
 
+function closeDropdown() {
+    setTimeout(() => {
+        if (!focusedOnFilter.value) {
+            openDropdown.value = false
+        }
+    }, 200);
+}
 
 </script>
+
+<style scoped>
+.make-difference {
+
+    justify-content: space-between;
+}
+</style>
