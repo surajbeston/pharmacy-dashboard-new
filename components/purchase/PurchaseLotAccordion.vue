@@ -13,7 +13,6 @@
 
                             </div>
                         </td>
-
                         <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
                             <div class="flex items-center">
                                 <button class="text-gray-400 hover:text-gray-500 transform"
@@ -58,7 +57,6 @@ onMounted(() => {
 })
 
 function addItem() {
-    console.log("adding item")
     purchaseItems.value.push({
         medicine: null,
         manufacture_date: '2000-01-01',
@@ -70,7 +68,6 @@ function addItem() {
         sales_price: 0,
         cost_price: 0
     })
-    console.log(props.purchaseLot.purchaseitem_set)
 }
 
 function removeItem(item){

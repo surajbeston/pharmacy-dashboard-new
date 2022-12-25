@@ -12,7 +12,6 @@
 
                             </div>
                         </td>
-
                         <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
                             <div class="flex items-center">
                                 <button class="text-gray-400 hover:text-gray-500 transform"
@@ -50,7 +49,7 @@
 <script setup>
 import ConfirmDeleteModal from '../utils/ConfirmDeleteModal.vue';
 
-const props = defineProps(["purchaseItem"])
+const props = defineProps(["purchaseItem", "save"])
 const emit = defineEmits(["removeItem"])
 const openAccordion = ref(false)
 
@@ -78,5 +77,18 @@ function removeItem() {
     emit("removeItem", props.purchaseItem)
 }
 
+watch(() => props.save, async (save) => {
+    var data = props.purchaseItem
+    data.medicine = data.medicine.slug
+    try{
+        await useBaseFetch(`/admin-api/meds/purchaseitem/`, {
+            method: 'PATCH',
+            body: data
+        })
+    }
+    catch(err) {
+        console.log(err.response)
+    }
+})
 
 </script>

@@ -36,32 +36,20 @@
                                         <label class="block text-sm font-medium mb-1" for="mandatory">Supplier<span
                                                 class="text-red-500">*</span></label>
                                         <Dropdown :objects="suppliers" name-attribute="name" value-attribute="id"
-                                            @selected-object="selectSupplier" :initial-object="purchaseLotSupplier"></Dropdown>
+                                            @selected-object="selectSupplier" :initial-object="purchaseLotSupplier">
+                                        </Dropdown>
                                     </div>
-                                    <!-- <div>
-                                        <div>
-                                            <label class="block text-sm font-medium mb-1" for="mandatory">Manufacturer
-                                                Address<span class="text-red-500"></span></label>
-                                            <input v-model="manufacturer.manufacturer_address" class="form-input w-full"
-                                                type="text" required />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <label class="block text-sm font-medium mb-1" for="mandatory">Marketer
-                                                Address<span class="text-red-500"></span></label>
-                                            <input v-model="manufacturer.marketer_address" class="form-input w-full"
-                                                type="text" required />
-                                        </div>
-                                    </div> -->
+
                                 </div>
                                 <div>
                                 </div>
                                 <PurchaseLotAccordion :purchase-lot="purchaseLot"></PurchaseLotAccordion>
                             </div>
                             <div class="flex justify-end mt-5">
+                                <button @click="savePurchaseLot()"
+                                    class="btn bg-green-500 hover:bg-green-600 text-white">Save</button>
                                 <button @click="initiateDelete()"
-                                class="btn bg-red-500 hover:bg-red-600 text-white">Delete Lot</button>
+                                    class="btn bg-red-500 hover:bg-red-600 text-white">Delete Lot</button>
                             </div>
                         </div>
                     </div>
@@ -99,8 +87,8 @@ function selectSupplier(supplierId) {
     console.log(supplierId)
 }
 
-const purchaseLotSupplier = computed( () => {
-    if (purchaseLot){
+const purchaseLotSupplier = computed(() => {
+    if (purchaseLot) {
         console.log(suppliers)
         console.log(purchaseLot)
         var supplier = suppliers.filter((supplier) => {
@@ -111,9 +99,40 @@ const purchaseLotSupplier = computed( () => {
     }
 })
 
+async function savePurchaseLot() {
+    var data = purchaseLot
+    var purchaseItems = purchaseLot.purchaseitem_set
+    var id = purchaseLot.id
+    delete data.purchaseitem_set
+    delete data.id
+    try {
+        await useBaseFetch(`/admin-api/meds/purchaselot/${id}/`, {
+            method: 'PATCH',
+            body: data
+        })
+    }
+    catch(err) {
+        console.log(err.response)
+    }
+    purchaseItems.forEach((each) => {
+        var item = each
+        item.medicine = item.medicine.slug
+        var id = item.id
+        delete item.id
+        delete item.purchase_lot
+        useBaseFetch(`/admin-api/meds/purchaseitem/${id}/`, {
+            method: 'PATCH',
+            body: item
+        }).then((response) => {
+            console.log(response)
+        }).catch(err => {
+            console.log(err.response)
+        })
+    })
+}
+
+
 const deleteInfo = ref(' ')
-const showDeleteModal = ref(false)
-const deleteUrl = ref('')
 
 function initiateDelete() {
     deleteInfo.value = `Delete purchase item of id #${purchaseLot.id} with ${purchaseLot.purchaseitem_set.length} items.`
