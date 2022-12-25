@@ -84,10 +84,10 @@ onMounted(() => {
 
 function selectObject(objectValue) {
     selectedObject.value = objectValue
-    emit("selectedObject", objectValue)
     var obj = listObjects.value.filter((obj) => {
         return obj[props.valueAttribute] == selectedObject.value
     })
+    emit("selectedObject", obj[0])
     selectedObjectName.value = obj[0][props.nameAttribute]
     openDropdown.value = false
 }

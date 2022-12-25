@@ -82,9 +82,10 @@ const currentMedicine = computed(() => {
     return props.purchaseItem.medicine
 })
 
-function selectMedicine(slug) {
-    selectedMedicine.value = slug
+function selectMedicine(medicine) {
+    props.purchaseItem.medicine = medicine
 }
+
 const selectedMedicine = ref('')
 
 

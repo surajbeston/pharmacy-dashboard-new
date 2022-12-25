@@ -32,10 +32,10 @@
                             <PurchaseItemAccordion :purchase-item="item" @remove-item="removeItem"></PurchaseItemAccordion>
                         </td>
                     </tr>
-                    <tr>
+                    <tr v-show="openAccordion">
                         <td colspan="10" class="px-2 first:pl-5 last:pr-5 py-3">
                             <div class="flex justify-end">
-                                <button @click="addItem()" class="btn bg-indigo-500 hover:bg-indigo-600 text-white">Add Item</button>
+                                <button @click="addItem()" class="btn-sm bg-indigo-500 hover:bg-indigo-600 text-white">Add Item</button>
                             </div>
                         </td>
                     </tr>
@@ -74,6 +74,4 @@ function removeItem(item){
     var index = purchaseItems.value.indexOf(item)
     purchaseItems.value.splice(index, 1)
 }
-
-
 </script>
