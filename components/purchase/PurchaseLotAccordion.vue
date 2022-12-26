@@ -52,7 +52,7 @@ const openAccordion = ref(false)
 
 const purchaseItems = ref([])
 
-onMounted(() => {
+watch(() => props.purchaseLot.purchaseitem_set, (items) => {
     purchaseItems.value = props.purchaseLot.purchaseitem_set
 })
 
@@ -74,4 +74,7 @@ function removeItem(item){
     var index = purchaseItems.value.indexOf(item)
     purchaseItems.value.splice(index, 1)
 }
+
+
+
 </script>

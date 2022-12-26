@@ -106,8 +106,8 @@ function getFilterDates() {
     }
 }
 
-async function filterByPharmacy(pharmacyId){
-    pharmacyFilterString.value = `pharmacy=${pharmacyId}`
+async function filterByPharmacy(pharmacy){
+    pharmacyFilterString.value = `pharmacy=${pharmacy.id}`
 }
 
 watch(() => pharmacyFilterString.value + dateFilterString.value, () => {

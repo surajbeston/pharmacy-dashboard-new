@@ -106,6 +106,7 @@ $bus.$on('saveItem', (data) => {
             body: item
         }).then((response) => {
             errorOccured.value = false
+            $bus.$emit("itemSaved", response)
         }).catch(err => {
             errorOccured.value = true
         })
@@ -114,12 +115,13 @@ $bus.$on('saveItem', (data) => {
         console.log("this purchase lot", data.purchaseLot)
         item.purchase_lot = data.purchaseLot.id
         item.medicine = item?.medicine?.slug
-        console.log(item)
+        console.log("item item", item)
         useBaseFetch(`/admin-api/meds/purchaseitem/`, {
             method: 'POST',
             body: item
         }).then((response) => {
             errorOccured.value = false
+            $bus.$emit("itemSaved", response)
         }).catch(err => {
             errorOccured.value = true
         })

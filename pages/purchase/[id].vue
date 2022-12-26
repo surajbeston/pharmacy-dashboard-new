@@ -13,7 +13,7 @@
                         <div>
                             <div style="display: flex; flex-direction: column" class="grid gap-5 md:grid-cols-3">
                                 <div class="flex flex-col gap-5">
-                                    <div>
+                                    <div v-show="id != 'new'">
                                         <label class="block text-sm font-medium mb-1" for="mandatory">Datetime
                                             Added<span class="text-red-500">*</span></label>
                                         <input v-model="datetime" class="form-input w-60" type="datetime-local" />
@@ -69,8 +69,8 @@ const { results: suppliers } = await useBaseFetch(`/admin-api/meds/supplier/?lim
 // const { results: medicines } = await useBaseFetch(`/admin-api/meds/medicine/?limit=10000000`)
 
 const datetime = computed(() => {
-    if (purchaseLot.datetime_added) {
-        return purchaseLot.datetime_added.split(".")[0]
+    if (purchaseLot.value.datetime_added) {
+        return purchaseLot.value.datetime_added.split(".")[0]
     }
 })
 
@@ -87,18 +87,16 @@ onMounted( async () => {
     }
 })
 
-function selectSupplier(supplierId) {
-    console.log(supplierId)
+function selectSupplier(supplier) {
+    purchaseLot.value.supplier = supplier
 }
 
 const purchaseLotSupplier = computed(() => {
     if (purchaseLot) {
-        console.log(suppliers)
-        console.log(purchaseLot)
+        
         var supplier = suppliers.filter((supplier) => {
-            return supplier.id == purchaseLot.supplier
+            return supplier.id == purchaseLot.value.supplier
         })
-        console.log(supplier)
         if (supplier.length > 0) return supplier[0]
     }
 })
@@ -106,25 +104,24 @@ const purchaseLotSupplier = computed(() => {
 async function savePurchaseLot() {
     var data = purchaseLot
     try {
-        if (purchaseLot.id) {
-            var currentPurchaseLot = await useBaseFetch(`/admin-api/meds/purchaselot/${purchaseLot.id}/`, {
+        if (purchaseLot.value.id) {
+            var currentPurchaseLot = await useBaseFetch(`/admin-api/meds/purchaselot/${purchaseLot.value.id}/`, {
                 method: 'PATCH',
-                body: {id: purchaseLot.id, supplier: purchaseLot.supplier, extras: purchaseLot.extras}
+                body: {id: purchaseLot.value.id, supplier: purchaseLot.value.supplier?.id, extras: purchaseLot.value.extras}
             })
         }
         else {
+            console.log(purchaseLot.value)
             var currentPurchaseLot = await useBaseFetch(`/admin-api/meds/purchaselot/`, {
                 method: 'POST',
-                body: data
+                body: { supplier: purchaseLot.value.supplier?.id, extras: purchaseLot.value.extras}
             })
         }
     }
     catch (err) {
         console.log(err.response)
     }
-    console.log("saving item")
-    console.log(purchaseLot)
-    $bus.$emit('saveItem', {purchaseLot})
+    $bus.$emit('saveItem', { purchaseLot : currentPurchaseLot })
 }
 
 
@@ -147,9 +144,17 @@ function reloadPage() {
     router.push('/purchase')
 }
 
+const savedPurchaseItems = ref([])
 
-onMounted(() => {
-
+$bus.$on("itemSaved", (response) => {
+    savedPurchaseItems.value.push(response)
+    
+    if (savedPurchaseItems.value.length == purchaseLot.value.purchaseitem_set.length){
+        const router = useRouter()
+        router.push(`/purchase/${response.purchase_lot}`)
+    }
 })
+
+
 
 </script>

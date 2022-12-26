@@ -21,7 +21,7 @@
                         <!-- Modal content -->
                         <div class="text-sm mb-10">
                             <div class="space-y-2">
-                                <p>{{ deleteInfo }}</p>
+                                <p>{{  deleteInfo  }}</p>
                             </div>
                         </div>
                         <!-- Modal footer -->
@@ -62,12 +62,11 @@ const deleting = ref(false)
 const router = useRouter()
 
 async function deleteSelected() {
-    deleting.value = true
-    if (props.deleteUrl) {
-        await useBaseFetch(props.deleteUrl, {
-            method: 'DELETE'
-        })
-    }
+    deleting.value = true 
+    console.log(props.deleteUrl)
+    await useBaseFetch(props.deleteUrl, {
+        method: 'DELETE'
+    })
     deleting.value = false
     emit('deleted', true)
 }
