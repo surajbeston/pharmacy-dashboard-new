@@ -104,6 +104,7 @@ const pages = ref([
         'icon': 'manufacturer.png',
         'url': '/order'
     },
+    
     {
         'name': 'Sign In',
         'icon': 'signin.png',
@@ -113,6 +114,11 @@ const pages = ref([
         'name': 'Purchase',
         'icon': 'purchase.png',
         'url': '/purchase'
+    }
+    ,{
+        'name': 'Supplier',
+        'icon': 'supplier.png',
+        'url': '/supplier'
     }
 ])
 
