@@ -62,15 +62,6 @@
                 <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                   <div class="font-semibold text-left">Address</div>
                 </th>
-                <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-                  <div class="font-semibold text-left">Medicines</div>
-                </th>
-                <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-                  <div class="font-semibold">Medicines</div>
-                </th>
-                <th class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
-                  <div class="font-semibold text-left">Payment</div>
-                </th>
               </tr>
             </thead>
             <!-- Table body -->

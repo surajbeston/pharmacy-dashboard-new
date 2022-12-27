@@ -84,24 +84,17 @@
               <div class="grid gap-5 md:grid-cols-2">
                 <div>
                   <div>
+                    <div class="flex" style="justify-content: space-between;">
                     <label
                       class="block text-sm font-medium mb-1"
                       for="manufacturer-item"
                       >Manufacturer <span class="text-red-500">*</span></label
                     >
-                    <select id="manufacturer-item" class="w-full form-select">
-                      <option selected>
-                        {{ medicineInfo.manufacturer.name }}
-                      </option>
-                      <option v-for="manufacturer in manufacturerList">
-                        {{ manufacturer.name }}
-                      </option>
-                    </select>
                     <div class="fastedit" style="display: flex">
                       <a
                         :href="`../manufacturer/${medicineInfo.manufacturer.id}`"
                         style="display: block; margin-left: auto"
-                        class="ml-2 mt-2"
+                        class="ml-2 "
                       >
                         <svg
                           enable-background="new 0 0 48 48"
@@ -128,7 +121,7 @@
                           </g>
                         </svg>
                       </a>
-                      <a class="ml-2 mt-2">
+                      <a class="ml-2 ">
                         <svg
                           wid
                           enable-background="new 0 0 48 48"
@@ -149,42 +142,19 @@
                           </g>
                         </svg>
                       </a>
-                      <a class="ml-2 mt-2">
-                        <svg
-                          enable-background="new 0 0 512 512"
-                          height="15px"
-                          id="Layer_1"
-                          version="1.1"
-                          viewBox="0 0 512 512"
-                          width="15px"
-                          xml:space="preserve"
-                          xmlns="http://www.w3.org/2000/svg"
-                          xmlns:xlink="http://www.w3.org/1999/xlink"
-                        >
-                          <g>
-                            <path
-                              d="M444.852,66.908h-99.339V47.04c0-21.943-17.792-39.736-39.736-39.736h-99.339   c-21.944,0-39.736,17.793-39.736,39.736v19.868H67.363v19.868h20.47l19.887,377.489c0,21.944,17.792,39.736,39.736,39.736h218.546   c21.944,0,39.736-17.792,39.736-39.736l19.538-377.489h19.577V66.908z M186.57,47.04c0-10.962,8.926-19.868,19.868-19.868h99.339   c10.962,0,19.868,8.906,19.868,19.868v19.868H186.57V47.04z M385.908,463.236l-0.039,0.505v0.524   c0,10.943-8.906,19.868-19.868,19.868H147.455c-10.942,0-19.868-8.925-19.868-19.868v-0.524l-0.019-0.523L107.72,86.776h297.669   L385.908,463.236z"
-                              fill="#37404D"
-                            />
-                            <rect
-                              fill="#37404D"
-                              height="317.885"
-                              width="19.868"
-                              x="246.173"
-                              y="126.511"
-                            />
-                            <polygon
-                              fill="#37404D"
-                              points="206.884,443.757 186.551,126.493 166.722,127.753 187.056,445.017  "
-                            />
-                            <polygon
-                              fill="#37404D"
-                              points="345.649,127.132 325.82,125.891 305.777,443.776 325.606,445.017  "
-                            />
-                          </g>
-                        </svg>
-                      </a>
+                      
                     </div>
+                    </div>
+                    <AsyncDropdownVue objects-url="/admin-api/meds/medicine/with_initial/" name-attribute="name"  :initial-object="manufacturerList" value-attribute="id"/>
+                    <!-- <select id="manufacturer-item" class="w-full form-select">
+                      <option selected>
+                        {{ medicineInfo.manufacturer.name }}
+                      </option>
+                      <option v-for="manufacturer in manufacturerList">
+                        {{ manufacturer.name }}
+                      </option>
+                    </select> -->
+                    
                   </div>
                 </div>
                 <div>
@@ -562,7 +532,7 @@
 </template>
 <script setup>
 import { use } from "h3";
-
+import AsyncDropdownVue from "~~/components/utils/AsyncDropdown.vue";
 // initialization
 let show = ref(false);
 const dosageFormList = [
