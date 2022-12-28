@@ -67,6 +67,10 @@
                         for="mandatory"
                         >Medicines<span class="text-red-500"></span
                       ></label>
+                      <div v-for="Meds in supplier.medicines" style="display: flex;">
+                        <h3 style="border: 2px solid red;">{{ Meds }}</h3>
+                        <a href="">Delete</a>
+                      </div>
                     
                     </div>
                   </div>
@@ -199,7 +203,7 @@
         </div>
       </div>
     </main>
-    <Loader style="margin: auto 0" loading="loading" />
+    <Loader v-show="loading" style="margin: auto 0" loading="loading" />
   </div>
 </template>
 <script setup>

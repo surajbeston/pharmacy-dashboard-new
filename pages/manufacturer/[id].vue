@@ -206,7 +206,7 @@
         </div>
       </div>
     </main>
-    <Loader style="margin: auto 0" loading="loading"/>
+    <Loader v-show="loading" style="margin: auto 0" loading="loading"/>
   </div>
 </template>
 <script setup>
@@ -238,6 +238,7 @@ async function getManufacturer() {
     console.log(response);
     manufacturer.value = response;
     loading.value = false;
+  
     if (!response.ok) {
       throw new Error(response.statusText);
     }
