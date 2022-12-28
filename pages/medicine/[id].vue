@@ -84,68 +84,76 @@
               <div class="grid gap-5 md:grid-cols-2">
                 <div>
                   <div>
-                    <div class="flex" style="justify-content: space-between;">
-                    <label
-                      class="block text-sm font-medium mb-1"
-                      for="manufacturer-item"
-                      >Manufacturer <span class="text-red-500">*</span></label
-                    >
-                    <div class="fastedit" style="display: flex">
-                      <a
-                        :href="`../manufacturer/${medicineInfo.manufacturer.id}`"
-                        style="display: block; margin-left: auto"
-                        class="ml-2 "
+                    <div class="flex" style="justify-content: space-between">
+                      <label
+                        class="block text-sm font-medium mb-1"
+                        for="manufacturer-item"
+                        >Manufacturer <span class="text-red-500">*</span></label
                       >
-                        <svg
-                          enable-background="new 0 0 48 48"
-                          height="15px"
-                          id="Layer_4"
-                          version="1.1"
-                          viewBox="0 0 48 48"
-                          width="15px"
-                          xml:space="preserve"
-                          xmlns="http://www.w3.org/2000/svg"
-                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                      <div class="fastedit" style="display: flex">
+                        <a
+                          :href="`../manufacturer/${medicineInfo.manufacturer.id}`"
+                          style="display: block; margin-left: auto"
+                          class="ml-2"
                         >
-                          <g>
-                            <rect
-                              height="10.373"
-                              transform="matrix(-0.7073 0.707 -0.707 -0.7073 76.2081 -18.93)"
-                              width="6.526"
-                              x="38.761"
-                              y="1.127"
-                            />
-                            <polygon
-                              points="33.942,7.09 10.721,30.311 10.659,30.311 0.003,40.965 0.003,41.025 0.003,47.66 8.03,47.66 17.354,38.336    17.354,38.309 41.258,14.405  "
-                            />
-                          </g>
-                        </svg>
-                      </a>
-                      <a class="ml-2 ">
-                        <svg
-                          wid
-                          enable-background="new 0 0 48 48"
-                          height="15px"
-                          id="Layer_1"
-                          version="1.1"
-                          viewBox="0 0 48 48"
-                          width="15px"
-                          xml:space="preserve"
-                          xmlns="http://www.w3.org/2000/svg"
-                          xmlns:xlink="http://www.w3.org/1999/xlink"
-                        >
-                          <g id="Layer_3">
-                            <polygon
-                              fill="#241F20"
-                              points="48,19.612 28.389,19.612 28.389,0.005 19.672,0.005 19.672,19.612 0.06,19.612 0.06,28.328    19.672,28.328 19.672,47.936 28.389,47.936 28.389,28.328 48,28.328  "
-                            />
-                          </g>
-                        </svg>
-                      </a>
-                      
+                          <svg
+                            enable-background="new 0 0 48 48"
+                            height="15px"
+                            id="Layer_4"
+                            version="1.1"
+                            viewBox="0 0 48 48"
+                            width="15px"
+                            xml:space="preserve"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                          >
+                            <g>
+                              <rect
+                                height="10.373"
+                                transform="matrix(-0.7073 0.707 -0.707 -0.7073 76.2081 -18.93)"
+                                width="6.526"
+                                x="38.761"
+                                y="1.127"
+                              />
+                              <polygon
+                                points="33.942,7.09 10.721,30.311 10.659,30.311 0.003,40.965 0.003,41.025 0.003,47.66 8.03,47.66 17.354,38.336    17.354,38.309 41.258,14.405  "
+                              />
+                            </g>
+                          </svg>
+                        </a>
+                        <a class="ml-2">
+                          <svg
+                            wid
+                            enable-background="new 0 0 48 48"
+                            height="15px"
+                            id="Layer_1"
+                            version="1.1"
+                            viewBox="0 0 48 48"
+                            width="15px"
+                            xml:space="preserve"
+                            xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                          >
+                            <g id="Layer_3">
+                              <polygon
+                                fill="#241F20"
+                                points="48,19.612 28.389,19.612 28.389,0.005 19.672,0.005 19.672,19.612 0.06,19.612 0.06,28.328    19.672,28.328 19.672,47.936 28.389,47.936 28.389,28.328 48,28.328  "
+                              />
+                            </g>
+                          </svg>
+                        </a>
+                      </div>
                     </div>
+                    <div>
+                      <AsyncDropDown
+                        style="width: 100%;"
+                        objectsUrl="/meds/manufacturer/with_initial/"
+                        nameAttribute="name"
+                        valueAttribute="id"
+                        @selectedObject="selectManufacturer"
+                      >
+                      </AsyncDropDown>
                     </div>
-                    <AsyncDropdownVue objects-url="/admin-api/meds/medicine/with_initial/" name-attribute="name"  :initial-object="manufacturerList" value-attribute="id"/>
                     <!-- <select id="manufacturer-item" class="w-full form-select">
                       <option selected>
                         {{ medicineInfo.manufacturer.name }}
@@ -154,7 +162,6 @@
                         {{ manufacturer.name }}
                       </option>
                     </select> -->
-                    
                   </div>
                 </div>
                 <div>
@@ -531,8 +538,8 @@
   </div>
 </template>
 <script setup>
-import { use } from "h3";
-import AsyncDropdownVue from "~~/components/utils/AsyncDropdown.vue";
+import AsyncDropDown from "~/components/utils/AsyncDropdown.vue";
+// import { use } from "h3";
 // initialization
 let show = ref(false);
 const dosageFormList = [

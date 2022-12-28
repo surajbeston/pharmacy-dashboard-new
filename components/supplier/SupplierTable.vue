@@ -2,7 +2,6 @@
   <div>
     <div class="bg-white shadow-lg rounded-sm border border-gray-200 mb-8">
       <div>
-        <pre>{{ supplierBatches[0] }}</pre>
         <header class="px-5 py-4 flex flex-row justify-between">
           <div class="flex flex-row">
             <h2 class="font-semibold text-gray-800">

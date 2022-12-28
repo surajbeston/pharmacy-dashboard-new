@@ -11,7 +11,7 @@
                         <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">Supplier ✨</h1>
                     </div>
 
-                    <OrdersActions class="mr-20" @filter-url="filter"></OrdersActions>
+                    <SupplierActions class="mr-20" @filter-url="filter"></SupplierActions>
                     <!-- Right: Actions -->
                     <!-- <%= require('html-loader!./partials/table-actions.html') %> -->
                 </div>
@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-
+import supplierActionsVue from '~~/components/supplier/supplierActions.vue';
 const currentPage = useCurrentPage()
 const supplierBatches = ref([])
 
