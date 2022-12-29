@@ -1,9 +1,9 @@
 <template>
-    <div class=" ml-10 rounded-sm border border-gray-300 bg-gray-100">
+    <div class=" ml-10 rounded-sm border border-gray-300 bg-gray-100" >
         <div class="overflow-x-auto">
             <table class="table-auto w-full divide-y divide-gray-200">
                 <tbody class="text-sm">
-                    <tr>
+                    <tr :class="{'bg-red-200': errorOccured}">
                         <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                             <div class="text-left "># {{ purchaseItem?.medicine?.brand_name }}</div>
                         </td>
@@ -12,7 +12,6 @@
 
                             </div>
                         </td>
-
                         <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-px">
                             <div class="flex items-center">
                                 <button class="text-gray-400 hover:text-gray-500 transform"
@@ -50,17 +49,19 @@
 <script setup>
 import ConfirmDeleteModal from '../utils/ConfirmDeleteModal.vue';
 
-const props = defineProps(["purchaseItem"])
+const props = defineProps(["purchaseItem", "save"])
 const emit = defineEmits(["removeItem"])
 const openAccordion = ref(false)
+const { $bus } = useNuxtApp()
 
+const errorOccured = ref(false)
 
 const deleteInfo = ref(' ')
 const showDeleteModal = ref(false)
 const deleteUrl = ref('')
 
 function initiateDelete() {
-    deleteInfo.value = `Delete purchase item of id #${props.purchaseItem.id} with medicine ${props.purchaseItem.medicine.brand_name}.`
+    deleteInfo.value = `Delete purchase item of id #${props.purchaseItem.id} with medicine ${props.purchaseItem?.medicine?.brand_name}.`
     deleteUrl.value = `/admin-api/meds/purchaseitem/${props.purchaseItem.id}/`
     showDeleteModal.value = true
 }
@@ -78,5 +79,53 @@ function removeItem() {
     emit("removeItem", props.purchaseItem)
 }
 
+watch(() => props.save, async (save) => {
+    var data = Object.assign({}, props.purchaseItem)
+    data.medicine = data.medicine.slug
+    try {
+        await useBaseFetch(`/admin-api/meds/purchaseitem/`, {
+            method: 'PATCH',
+            body: data
+        })
+    }
+    catch (err) {
+        console.log(err.response)
+    }
+})
+
+$bus.$on('saveItem', (data) => {
+    var item = Object.assign({}, props.purchaseItem)
+    if (props.purchaseItem.id) {
+        item.medicine = item.medicine.slug
+        var id = item.id
+        delete item.id
+        delete item.purchase_lot
+
+        useBaseFetch(`/admin-api/meds/purchaseitem/${id}/`, {
+            method: 'PATCH',
+            body: item
+        }).then((response) => {
+            errorOccured.value = false
+            $bus.$emit("itemSaved", response)
+        }).catch(err => {
+            errorOccured.value = true
+        })
+    }
+    else {
+        console.log("this purchase lot", data.purchaseLot)
+        item.purchase_lot = data.purchaseLot.id
+        item.medicine = item?.medicine?.slug
+        console.log("item item", item)
+        useBaseFetch(`/admin-api/meds/purchaseitem/`, {
+            method: 'POST',
+            body: item
+        }).then((response) => {
+            errorOccured.value = false
+            $bus.$emit("itemSaved", response)
+        }).catch(err => {
+            errorOccured.value = true
+        })
+    }
+})
 
 </script>

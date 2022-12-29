@@ -21,7 +21,7 @@
                         <!-- Modal content -->
                         <div class="text-sm mb-10">
                             <div class="space-y-2">
-                                <p>{{ deleteInfo }}</p>
+                                <p>{{  deleteInfo  }}</p>
                             </div>
                         </div>
                         <!-- Modal footer -->
@@ -32,6 +32,7 @@
                                 @click="deleteSelected()">Yes</button>
                         </div>
                         <div v-else class="flex justify-center">
+
                             <svg aria-hidden="true"
                                 class="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
                                 viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -61,15 +62,15 @@ const deleting = ref(false)
 const router = useRouter()
 
 async function deleteSelected() {
-    deleting.value = true
-    if (props.deleteUrl) {
-        await useBaseFetch(props.deleteUrl, {
-            method: 'DELETE'
-        })
-    }
+    deleting.value = true 
+    console.log(props.deleteUrl)
+    await useBaseFetch(props.deleteUrl, {
+        method: 'DELETE'
+    })
     deleting.value = false
     emit('deleted', true)
 }
+
 
 function cancel() {
     emit("cancelled", true)

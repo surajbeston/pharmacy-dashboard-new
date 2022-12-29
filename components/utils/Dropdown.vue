@@ -73,18 +73,21 @@ watch(results, (res) => {
 
 onMounted(() => {
     listObjects.value = props.objects
-    if (props.initialObject){
-        selectedObject.value = props.initialObject[props.valueAttribute]
-        selectedObjectName.value = props.initialObject[props.nameAttribute]
-    }
+
+})
+
+watch(() => props.initialObject, () => {
+    selectedObject.value = props.initialObject[props.valueAttribute]
+    selectedObjectName.value = props.initialObject[props.nameAttribute]
 })
 
 function selectObject(objectValue) {
     selectedObject.value = objectValue
-    emit("selectedObject", objectValue)
+
     var obj = props.objects.filter((obj) => {
-            return obj[props.valueAttribute] == selectedObject.value
-        })
+        return obj[props.valueAttribute] == selectedObject.value
+    })
+    emit("selectedObject", obj[0])
     selectedObjectName.value = obj[0][props.nameAttribute]
     openDropdown.value = false
 }
@@ -111,7 +114,7 @@ function closeDropdown() {
     justify-content: space-between;
 }
 
-.button-border{
+.button-border {
     border-color: rgb(229 231 235 / var(--tw-border-opacity));
 }
 </style>

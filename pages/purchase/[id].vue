@@ -3,12 +3,6 @@
         <main>
             <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
                 <div class="mb-8">
-                    <button style="display: block; height: 30px; padding: 0; width: 75px"
-                        class="ml-auto text-center text-indigo-400 font-bold rounded py-2 w-2/12 focus:outline-none bg-white-900 border-2 border-indigo-400">
-                        History
-                    </button>
-                </div>
-                <div class="mb-8">
                     <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">
                         #{{ purchaseLot.id }}
                     </h1>
@@ -19,12 +13,11 @@
                         <div>
                             <div style="display: flex; flex-direction: column" class="grid gap-5 md:grid-cols-3">
                                 <div class="flex flex-col gap-5">
-                                    <div>
+                                    <div v-show="id != 'new'">
                                         <label class="block text-sm font-medium mb-1" for="mandatory">Datetime
                                             Added<span class="text-red-500">*</span></label>
                                         <input v-model="datetime" class="form-input w-60" type="datetime-local" />
                                     </div>
-
                                     <div>
                                         <div class="max-w-[400px]">
                                             <label class="block text-sm font-medium mb-1" for="mandatory">Extras</label>
@@ -36,32 +29,20 @@
                                         <label class="block text-sm font-medium mb-1" for="mandatory">Supplier<span
                                                 class="text-red-500">*</span></label>
                                         <Dropdown :objects="suppliers" name-attribute="name" value-attribute="id"
-                                            @selected-object="selectSupplier" :initial-object="purchaseLotSupplier"></Dropdown>
+                                            @selected-object="selectSupplier" :initial-object="purchaseLotSupplier">
+                                        </Dropdown>
                                     </div>
-                                    <!-- <div>
-                                        <div>
-                                            <label class="block text-sm font-medium mb-1" for="mandatory">Manufacturer
-                                                Address<span class="text-red-500"></span></label>
-                                            <input v-model="manufacturer.manufacturer_address" class="form-input w-full"
-                                                type="text" required />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div>
-                                            <label class="block text-sm font-medium mb-1" for="mandatory">Marketer
-                                                Address<span class="text-red-500"></span></label>
-                                            <input v-model="manufacturer.marketer_address" class="form-input w-full"
-                                                type="text" required />
-                                        </div>
-                                    </div> -->
+
                                 </div>
                                 <div>
                                 </div>
                                 <PurchaseLotAccordion :purchase-lot="purchaseLot"></PurchaseLotAccordion>
                             </div>
-                            <div class="flex justify-end mt-5">
+                            <div class="flex justify-end mt-5 gap-5">
+                                <button @click="savePurchaseLot()"
+                                    class="btn bg-green-500 hover:bg-green-600 text-white">Save</button>
                                 <button @click="initiateDelete()"
-                                class="btn bg-red-500 hover:bg-red-600 text-white">Delete Lot</button>
+                                    class="btn bg-red-500 hover:bg-red-600 text-white">Delete Lot</button>
                             </div>
                         </div>
                     </div>
@@ -76,42 +57,75 @@
 </template>
 
 <script setup>
-import consolaGlobalInstance from 'consola';
 import ConfirmDeleteModal from '~~/components/utils/ConfirmDeleteModal.vue';
 import Dropdown from '~~/components/utils/Dropdown.vue';
+const { $bus } = useNuxtApp()
 const dropdownLoaded = ref(false)
 const route = useRoute()
 const id = route.params.id
 
-
-const purchaseLot = await useBaseFetch(`/admin-api/meds/purchaselot/${id}`)
+const purchaseLot = ref([])
 const { results: suppliers } = await useBaseFetch(`/admin-api/meds/supplier/?limit=100000`)
 // const { results: medicines } = await useBaseFetch(`/admin-api/meds/medicine/?limit=10000000`)
 
 const datetime = computed(() => {
-    if (purchaseLot.datetime_added) {
-        return purchaseLot.datetime_added.split(".")[0]
+    if (purchaseLot.value.datetime_added) {
+        return purchaseLot.value.datetime_added.split(".")[0]
     }
 })
 
+onMounted( async () => {
+    if (id == 'new'){
+        purchaseLot.value = {
+            supplier: {},
+            extras: "",
+            purchaseitem_set: []
+        }
+    }
+    else{
+        purchaseLot.value = await useBaseFetch(`/admin-api/meds/purchaselot/${id}`)
+    }
+})
 
-function selectSupplier(supplierId) {
-    console.log(supplierId)
+function selectSupplier(supplier) {
+    purchaseLot.value.supplier = supplier
 }
 
-const purchaseLotSupplier = computed( () => {
-    if (purchaseLot){
-        console.log(suppliers)
-        console.log(purchaseLot)
+const purchaseLotSupplier = computed(() => {
+    if (purchaseLot) {
+        
         var supplier = suppliers.filter((supplier) => {
-            return supplier.id == purchaseLot.supplier
+            return supplier.id == purchaseLot.value.supplier
         })
-        console.log(supplier)
         if (supplier.length > 0) return supplier[0]
     }
 })
 
-const deleteInfo = ref(' ')
+async function savePurchaseLot() {
+    var data = purchaseLot
+    try {
+        if (purchaseLot.value.id) {
+            var currentPurchaseLot = await useBaseFetch(`/admin-api/meds/purchaselot/${purchaseLot.value.id}/`, {
+                method: 'PATCH',
+                body: {id: purchaseLot.value.id, supplier: purchaseLot.value.supplier?.id, extras: purchaseLot.value.extras}
+            })
+        }
+        else {
+            console.log(purchaseLot.value)
+            var currentPurchaseLot = await useBaseFetch(`/admin-api/meds/purchaselot/`, {
+                method: 'POST',
+                body: { supplier: purchaseLot.value.supplier?.id, extras: purchaseLot.value.extras}
+            })
+        }
+    }
+    catch (err) {
+        console.log(err.response)
+    }
+    $bus.$emit('saveItem', { purchaseLot : currentPurchaseLot })
+}
+
+
+const deleteInfo = ref('')
 const showDeleteModal = ref(false)
 const deleteUrl = ref('')
 
@@ -130,9 +144,17 @@ function reloadPage() {
     router.push('/purchase')
 }
 
+const savedPurchaseItems = ref([])
 
-onMounted(() => {
-
+$bus.$on("itemSaved", (response) => {
+    savedPurchaseItems.value.push(response)
+    
+    if (savedPurchaseItems.value.length == purchaseLot.value.purchaseitem_set.length){
+        const router = useRouter()
+        router.push(`/purchase/${response.purchase_lot}`)
+    }
 })
+
+
 
 </script>

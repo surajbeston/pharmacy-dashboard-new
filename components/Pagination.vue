@@ -41,16 +41,24 @@ const paginationOffsetRight = ref(0)
 
 function gotoNextPage() {
     if (nextPage) {
-        var anotherPage = nextPage.value.replace('http', 'https')
-        emit("anotherPage", anotherPage.replace(apiURL.value, ""))
+        emit("anotherPage", cleanLink(nextPage.value))
     }
 }
 
 function gotoPreviousPage() {
     if (previousPage) {
-        var anotherPage = previousPage.value.replace('http', 'https')
-        emit("anotherPage", anotherPage.replace(apiURL.value, ""))
+        emit("anotherPage", cleanLink(previousPage.value))
     }
+}
+
+function cleanLink(link) {
+    if (!(link.includes("localhost") || link.includes("127.0.0.1"))) {
+        var newLink = link.replace('http', 'https')
+    }
+    else {
+        var newLink = link
+    }
+    return newLink.replace(apiURL.value, "")
 }
 
 function getParameterByName(name, url) {

@@ -1,13 +1,9 @@
 <template>
     <main class="bg-white">
-
         <div class="relative flex">
-
             <!-- Content -->
             <div class="w-full md:w-1/2">
-
                 <div class="min-h-screen h-full flex flex-col after:flex-1">
-
                     <!-- Header -->
                     <div class="flex-1">
                         <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
@@ -51,7 +47,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium mb-1" for="password">Password</label>
-                                    <input v-model="password" id="password" class="form-input w-full" type="password" autocomplete="on" />
+                                    <input v-model="password" @keyup="signin()" id="password" class="form-input w-full" type="password" autocomplete="on" />
                                 </div>
                             </div>
                             <div class="flex items-center justify-between mt-6">
