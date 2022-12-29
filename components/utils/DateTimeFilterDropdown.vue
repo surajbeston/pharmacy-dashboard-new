@@ -33,7 +33,7 @@
 
 <script setup>
 
-const props = defineProps(["future"])
+const props = defineProps(["future", "saveKey"])
 const emit = defineEmits(["selected"])
 
 const showOptions = ref(false)
@@ -47,6 +47,16 @@ onMounted(() => {
         dateSelectOptions.value = ['Today', 'In 3 Days', 'In 7 Days', 'In 1 Month', 'In 12 Months']
         selectedOption.value = 'Today'
     }
+    if(props.saveKey){
+        var pastOption = localStorage.getItem(`datetime_filter_${props.saveKey}`)
+
+        if (pastOption) {
+            selectOption(pastOption)
+        }else{
+            selectOption('All Time')
+        }
+    }
+    
 })
 
 function getFilterDates() {
@@ -80,7 +90,7 @@ function getFilterDates() {
             today.setMonth(today.getMonth() + 1)
         }
         else {
-            today.Month(today.getMonth() - 1)
+            today.setMonth(today.getMonth() - 1)
         }
         var dateFrom = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
         return { from: dateFrom, to: dateTo }
@@ -90,7 +100,7 @@ function getFilterDates() {
             today.setMonth(today.getMonth() + 12)
         }
         else {
-            today.Month(today.getMonth() - 12)
+            today.setMonth(today.getMonth() - 12)
         }
         var dateFrom = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`
         return { from: dateFrom, to: dateTo }
@@ -101,8 +111,12 @@ function getFilterDates() {
 }
 
 function selectOption(option) {
+
     selectedOption.value = option
     var filterDates = getFilterDates()
+    if (props.saveKey){
+        localStorage.setItem(`datetime_filter_${props.saveKey}`, option)
+    }
     emit("selected", filterDates)
 }
 

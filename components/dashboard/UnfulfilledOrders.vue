@@ -3,7 +3,7 @@
         class="min-w-[200px]  flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-white shadow-lg rounded-sm border border-gray-200">
         <div class="flex justify-between">
             <span class="font-medium m-2">Unfulfilled Orders</span>
-            <DateTimeFilterDropdown @selected="fetchDateTimeOrders"></DateTimeFilterDropdown>
+            <DateTimeFilterDropdown @selected="fetchDateTimeOrders" save-key="recent_orders"></DateTimeFilterDropdown>
         </div>
         <div>
             <div v-for="order in orders" :key="order?.id" class="flex justify-between bg-white shadow-lg 
@@ -35,10 +35,7 @@ import DateTimeFilterDropdown from '../utils/DateTimeFilterDropdown.vue';
 
 const orders = ref([])
 
-onMounted( async () => {
-    var response = await useBaseFetch(`/admin-api/meds/order/?status=Acknowledged&ordering=datetime_ordered`)
-    orders.value = response.results
-})
+
 
 async function fetchDateTimeOrders(filterDates) {
     var orderUrl = `/admin-api/meds/order/?status=Acknowledged&ordering=datetime_ordered&`

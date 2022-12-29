@@ -4,7 +4,7 @@
             class="min-w-[300px]  flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-white shadow-lg rounded-sm border border-gray-200">
             <div class="flex justify-between border-b">
                 <span class="font-medium m-2">Order Insights</span>
-                <DateTimeFilterDropdown @selected="fetchDateTimeStatsOrders"></DateTimeFilterDropdown>
+                <DateTimeFilterDropdown @selected="fetchDateTimeStatsOrders" save-key="order_insights"></DateTimeFilterDropdown>
             </div>
             <div>
                 <section>
@@ -62,9 +62,6 @@ async function getStats(data = {}) {
     stats.value = response
 }
 
-onMounted(() => {
-    getStats()
-})
 
 function fetchDateTimeStatsOrders(filterDates) {
     var data = {}
