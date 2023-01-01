@@ -16,15 +16,19 @@
         </div>
 
         <!-- Cards -->
-        <!-- <div class="grid grid-cols-12 gap-6"> -->
-            <!-- <UnfulfilledOrders></UnfulfilledOrders> -->
+        <!-- <div class="grid grid-cols-12 gap-6">
+            <UnfulfilledOrders></UnfulfilledOrders>
 
-            <!-- <FilterMedicineStock></FilterMedicineStock>
+            <FilterMedicineStock></FilterMedicineStock>
             <FilterMedicineStockExpiry></FilterMedicineStockExpiry>
-            <OrderInsights></OrderInsights> -->
-            <ManyToMany name-attribute="brand_name" value-attribute="slug" :objects-url="`/meds/medicine/with_initial/`" @object-selected="getSelectedMedicines" ></ManyToMany>
-            <ManyToMany name-attribute="name" value-attribute="id" :objects="manufacturers" @object-selected="getSelectedMedicines" ></ManyToMany>
-        <!-- </div> -->
+            <OrderInsights></OrderInsights>
+
+            
+        </div> -->
+        <div class="grid grid-cols-1 md:grid-cols-2 mt-10">
+            <!-- <TotalPurchaseChart></TotalPurchaseChart> -->
+            <TotalSalesChart></TotalSalesChart>
+        </div>
     </div>
 </template>
 
@@ -37,15 +41,19 @@ import FilterMedicineStockExpiry from '~~/components/dashboard/FilterMedicineSto
 
 import ManyToMany from '~~/components/utils/ManyToMany.vue';
 
+import ExampleChart from '~~/components/dashboard/ExampleChart.vue';
+import TotalPurchaseChart from '~~/components/dashboard/TotalPurchaseChart.vue';
+import TotalSalesChart from '~~/components/dashboard/TotalSalesChart.vue';
+
 const thisCurrentPage = useCurrentPage()
 
-var { results:  manufacturers} = await useBaseFetch(`/admin-api/meds/manufacturer/?limit=10000`)
+var { results: manufacturers } = await useBaseFetch(`/admin-api/meds/manufacturer/?limit=10000`)
 
 onMounted(() => {
     thisCurrentPage.value = "Dashboard"
 })
 
-function getSelectedMedicines(selectedMedicines){
+function getSelectedMedicines(selectedMedicines) {
     console.log(selectedMedicines)
 }
 

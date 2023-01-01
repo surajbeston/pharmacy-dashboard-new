@@ -27,14 +27,16 @@
                 </div>
             </div>
         </div>
+        <ComponentPagination :data="data" @another-page="getAnotherPage"></ComponentPagination>
     </div>
 </template>
 
 <script setup>
 import DateTimeFilterDropdown from '../utils/DateTimeFilterDropdown.vue';
+import ComponentPagination from './ComponentPagination.vue';
 
 const orders = ref([])
-
+const data = ref(null)
 
 
 async function fetchDateTimeOrders(filterDates) {
@@ -45,8 +47,14 @@ async function fetchDateTimeOrders(filterDates) {
     else {
         orderUrl += `datetime_ordered__lte=${filterDates.to}&`
     }
-    var response  = await useBaseFetch(orderUrl)
-    orders.value = response.results
+    data.value  = await useBaseFetch(orderUrl)
+    orders.value = data.value.results
 }
+
+async function getAnotherPage(url) {
+    data.value = await useBaseFetch(url)
+    orders.value = data.value.results
+}
+
 
 </script>

@@ -13,19 +13,24 @@
 
                     <!-- <OrdersActions class="mr-20" @filter-url="filter"></OrdersActions> -->
                 </div>
-                <PurchaseTable :purchase-lots="purchaseLots" :loading="loading" ></PurchaseTable>
-                <Pagination :data="paginationData" @another-page="gotoAnotherPage" ></Pagination>
+                <ObjectsTable :objects="purchaseLots" :loading="loading" :features="features" delete-url="/admin-api/meds/purchaselot/__id__/" table-name="Purchases"></ObjectsTable>
+                <Pagination :data="paginationData" @another-page="gotoAnotherPage"></Pagination>
             </div>
         </main>
     </div>
 </template>
 
 <script setup>
-
+import ObjectsTable from '~~/components/utils/ObjectsTable.vue';
 const currentPage = useCurrentPage()
 const purchaseLots = ref([])
 
 const paginationData = ref([])
+
+const features = ref([{ "name": "id", "type": "key", "url": "/purchase/__id__" },
+{"name": "supplier", "type": "link", "link_id": "supplier_id", "url": "/supplier/__id__"},
+{ "name": "extras", "type": "text" },
+{ "name": "datetime_added", "type": "datetime" }])
 
 const loading = ref(true)
 
@@ -36,20 +41,25 @@ onMounted(() => {
 
 async function getPurchaseLots(url) {
     loading.value = true
-    paginationData.value =  await useBaseFetch(url)
+    paginationData.value = await useBaseFetch(url)
     paginationData.value.results.forEach(element => {
         element.selected = false
     });
     purchaseLots.value = paginationData.value.results
+    purchaseLots.value.forEach(lot => {
+        var supplier = lot.supplier
+        lot.supplier = supplier.name
+        lot.supplier_id = supplier.id
+    })
     loading.value = false
     console.log(purchaseLots.value)
 }
 
-async function gotoAnotherPage(url){
+async function gotoAnotherPage(url) {
     getPurchaseLots(url)
 }
 
-async function filter(url){ 
+async function filter(url) {
     getPurchaseLots(url)
 }
 

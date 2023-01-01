@@ -16,6 +16,7 @@
                     <!-- <%= require('html-loader!./partials/table-actions.html') %> -->
                 </div>
                 <OrdersTable :orderbatches="orderBatches" :loading="loading" ></OrdersTable>
+                <!-- <ObjectsTable :objects="orderBatches"></ObjectsTable> -->
                 <!-- <%= require('html-loader!./partials/orders/orders-table.html') %> -->
                 <Pagination :data="paginationData" @another-page="gotoAnotherPage" ></Pagination>
             </div>
@@ -24,7 +25,7 @@
 </template>
 
 <script setup>
-
+import ObjectsTable from '~~/components/utils/ObjectsTable.vue';
 const currentPage = useCurrentPage()
 const orderBatches = ref([])
 
@@ -45,7 +46,6 @@ async function getOrderBatches(url) {
     });
     orderBatches.value = paginationData.value.results
     loading.value = false
-    console.log(orderBatches.value)
 }
 
 async function gotoAnotherPage(url){
@@ -53,6 +53,7 @@ async function gotoAnotherPage(url){
 }
 
 async function filter(url){ 
+    console.log(url)
     getOrderBatches(url)
 }
 

@@ -12,7 +12,9 @@
         <div>
             <div v-for="medicine in medicines" :key="medicine?.slug" class="flex justify-between bg-white shadow-lg 
             rounded-sm border border-gray-200 p-2 ">
-                <div class="underline text-blue-500"><a :href="`/medicine/${medicine?.id}/`">{{ medicine?.brand_name}}</a>
+                <div class="underline text-blue-500"><a :href="`/medicine/${medicine?.id}/`">{{
+        medicine?.brand_name
+}}</a>
                 </div>
                 <div>
                     Quantity Left: {{ medicine.quantity }}
@@ -22,15 +24,19 @@
                 Total Medicines: {{ medicinesCount }}
             </div>
         </div>
+        <ComponentPagination :data="data" @another-page="getAnotherPage"></ComponentPagination>
     </div>
+
 </template>
 
 <script setup>
+import ComponentPagination from './ComponentPagination.vue';
 
 const medicines = ref([])
 const medicinesCount = ref(0)
 const quantity = ref(0)
 
+const data = ref(null)
 
 onMounted(() => {
     var localQuantity = localStorage.getItem('filter_medicine_stock')
@@ -43,12 +49,17 @@ onMounted(() => {
 watch(quantity, async (newQuantity) => {
     if (quantity.value) {
         localStorage.setItem('filter_medicine_stock', quantity.value)
-    } 
-    var response = await useBaseFetch(`/admin-api/meds/medicine/?quantity__lte=${newQuantity}`)
-    medicines.value = response.results
-    medicinesCount.value = response.count
+    }
+    data.value = await useBaseFetch(`/admin-api/meds/medicine/?quantity__lte=${newQuantity}`)
+    medicines.value = data.value.results
 
 })
+
+async function getAnotherPage(url) {
+    console.log(url)
+    data.value = await useBaseFetch(url)
+    medicines.value = data.value.results
+}
 
 </script>
 
