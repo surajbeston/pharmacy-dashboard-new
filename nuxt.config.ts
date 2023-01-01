@@ -2,21 +2,6 @@
 const colors = require("tailwindcss/colors");
 const plugin = require("tailwindcss/plugin");
 export default defineNuxtConfig({
-<<<<<<< HEAD
-  modules: [
-    '@nuxtjs/tailwindcss'
-  ],
-  css: [
-    '@/assets/css/style.scss',
-    '@/assets/css/additional-styles/flatpickr.scss',
-    '@/assets/css/additional-styles/theme.scss',
-    '@/assets/css/additional-styles/range-slider.scss',
-    '@/assets/css/additional-styles/toggle-switch.scss',
-    '@/assets/css/additional-styles/utility-patterns.scss'
-  ]
-
-})
-=======
   tailwindcss: {
     cssPath: "~/assets/css/style.scss",
     configPath: "/tailwind.config.js",
@@ -98,4 +83,3 @@ export default defineNuxtConfig({
     "@/assets/css/additional-styles/utility-patterns.scss",
   ],
 });
->>>>>>> user_creation
