@@ -66,7 +66,7 @@
                     <span
                       class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">{{
     page.name
-}}</span>
+                      }}</span>
                   </div>
                 </a>
               </li>
@@ -86,10 +86,11 @@ const pages = ref([
     'name': 'Dashboard',
     'icon': 'dashboard.png',
     'url': '/'
-  }, {
-    name: "Sign In",
-    icon: "signin.png",
-    url: "/signin",
+  },
+  {
+    'name': 'User',
+    'icon': 'dashboard.png',
+    'url': '/user'
   },
   {
     'name': 'Medicine',
@@ -118,5 +119,15 @@ const pages = ref([
   }
 ])
 
-const currentPage = useCurrentPage();
+const currentPage = ref('')
+
+onMounted(() => {
+  const route = useRoute()
+  pages.value.forEach((page) => {
+    if (route.path.includes(page.url)) {
+      currentPage.value = page.name
+    }
+  })
+})
+
 </script>

@@ -28,7 +28,7 @@
                         </div>
                         <!-- Modal footer -->
                         <div v-if="!deleting" class="flex flex-wrap justify-end space-x-2">
-                            <button class="btn-sm border-gray-200 hover:border-gray-300 text-gray-600"
+                            <button class="btn-sm border-gray-200 btn-border hover:border-gray-300 text-gray-600"
                                 @click="cancel">Cancel</button>
                         </div>
                         <div v-else class="flex justify-center">
@@ -53,8 +53,6 @@
 </template>
 
 <script setup>
-
-const showDeleteModal = ref(false)
 const props = defineProps(["infoTitle", "showModal"])
 const emit = defineEmits(["cancelled"])
 
@@ -67,3 +65,11 @@ function cancel() {
 }
 
 </script>
+
+<style>
+
+.btn-border{
+    border-color: rgb(226 232 240 / var(--tw-border-opacity));
+}
+
+</style>

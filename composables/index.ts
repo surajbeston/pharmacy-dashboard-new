@@ -54,6 +54,7 @@ export const useBaseFetch = (url: string, options = {}) => {
 };
 
 export const useFetchErrors = () => useState("fetchErrors", () => []);
+export const useSuccessMessages = () => useState("successMessages", () => []);
 export const useFetching = () => useState("fetching", () => false);
 
 

@@ -5,6 +5,7 @@
             <div class="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden bg-white">
                 <HorizontalLoader class="mt-5" :loading="fetching"></HorizontalLoader>
                 <FetchErrors></FetchErrors>
+                <Success></Success>
                 <NuxtPage />
             </div>
         </div>
@@ -12,7 +13,8 @@
 </template>
 
 <script setup>
-import FetchErrors from '~/components/utils/FetchErrors.vue';
+import FetchErrors from '~~/components/alert/FetchErrors.vue';
+import Success from './components/alert/Success.vue';
 import HorizontalLoader from '~/components/utils/HorizontalLoader.vue';
 
 const fetching = useFetching()
