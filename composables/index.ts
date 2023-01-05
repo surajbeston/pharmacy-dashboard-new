@@ -3,7 +3,7 @@ export const useCurrentPage = () => {
 };
 
 export const useApiURL = () =>
-  useState("apiURL", () => "http://localhost:8000");
+  useState("apiURL", () => "https://pharmacy-ecom.fly.dev");
 
 export const useBaseFetch = (url: string, options = {}) => {
   if (!options.headers) {

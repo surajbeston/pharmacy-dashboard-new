@@ -82,41 +82,42 @@
 const sidebarOpen = ref(true);
 
 const pages = ref([
-  {
-    'name': 'Dashboard',
-    'icon': 'dashboard.png',
-    'url': '/'
-  },
-  {
-    'name': 'User',
-    'icon': 'dashboard.png',
-    'url': '/user'
-  },
-  {
-    'name': 'Medicine',
-    'icon': 'medicine.png',
-    'url': '/medicine'
-  },
-  {
-    'name': 'Manufacturer',
-    'icon': 'manufacturer.png',
-    'url': '/manufacturer'
-  },
-  {
-    'name': 'Orders',
-    'icon': 'manufacturer.png',
-    'url': '/order'
-  },
-  {
-    'name': 'Sign In',
-    'icon': 'signin.png',
-    'url': '/signin'
-  },
-  {
-    'name': 'Purchase',
-    'icon': 'purchase.png',
-    'url': '/purchase'
-  }
+    {
+        'name': 'Dashboard',
+        'icon': 'dashboard.png',
+        'url': '/'
+    },
+    {
+        'name': 'Medicine',
+        'icon': 'medicine.png',
+        'url': '/medicine'
+    },
+    {
+        'name': 'Manufacturer',
+        'icon': 'manufacturer.png',
+        'url': '/manufacturer'
+    },
+    {
+        'name': 'Orders',
+        'icon': 'manufacturer.png',
+        'url': '/order'
+    },
+    
+    {
+        'name': 'Sign In',
+        'icon': 'signin.png',
+        'url': '/signin'
+    },
+    {
+        'name': 'Purchase',
+        'icon': 'purchase.png',
+        'url': '/purchase'
+    }
+    ,{
+        'name': 'Supplier',
+        'icon': 'supplier.png',
+        'url': '/supplier'
+    }
 ])
 
 const currentPage = ref('')
