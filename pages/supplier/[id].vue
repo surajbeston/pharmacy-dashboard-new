@@ -125,6 +125,9 @@
               </div>
             </div>
           </div>
+          <hr class="m-10"/>
+          <SupplierStock :supplier="supplier" :medicines="selectedMedicines"></SupplierStock>
+          <SupplierOrders :supplier="supplier"></SupplierOrders>
         </div>
       </div>
     </main>
@@ -134,7 +137,11 @@
 import AsyncDropdown from "~/components/utils/AsyncDropdown.vue";
 import Loader from "~~/components/utils/Loader.vue";
 
+import SupplierStock from "~~/components/supplier/SupplierStock.vue";
 import ManyToMany from "~~/components/utils/ManyToMany.vue";
+
+import SupplierOrders from "~~/components/supplier/SupplierOrders.vue";
+
 
 //for showing the danger button
 const show = ref(false);

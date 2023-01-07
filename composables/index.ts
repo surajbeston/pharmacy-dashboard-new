@@ -3,13 +3,13 @@ export const useCurrentPage = () => {
 };
 
 export const useApiURL = () =>
-  useState("apiURL", () => "https://pharmacy-ecom.fly.dev");
+  useState("apiURL", () => "http://localhost:8000");
 
 export const useBaseFetch = (url: string, options = {}) => {
+  const router = useRouter()
   if (!options.headers) {
     var token = useCookie('auth_token');
     if (!token.value) {
-      const router = useRouter()
       router.push("/")
     }
     if (token.value) options.headers = { Authorization: `Token ${token.value}` };
@@ -29,22 +29,33 @@ export const useBaseFetch = (url: string, options = {}) => {
       fetching.value = false
       var responseData = response._data
       var showTexts = []
-      if (responseData){
-        if (typeof(responseData) == 'object'){
+      if (responseData) {
+        console.log(responseData)
+        if (typeof (responseData) == 'object') {
           Object.keys(responseData).forEach((key) => {
-            var showText = ""
-            responseData[key].forEach((text) => {
-              showText += text + " "
-            })
-            var cleanKey = key.split("_").join(" ").toLocaleUpperCase()
-            showTexts.push( cleanKey + " : " + showText)
+            if (typeof (responseData[key]) == 'object') {
+              var showText = ""
+              responseData[key].forEach((text) => {
+                showText += text + " "
+              })
+              var cleanKey = key.split("_").join(" ").toLocaleUpperCase()
+              showTexts.push(cleanKey + " : " + showText)
+            }
+            else {
+              console.log(responseData[key])
+              if (responseData[key] == 'Invalid token.'){
+                console.log("reached here")
+                console.log("reached here 2")
+              }
+              showTexts.push(key + " : " + responseData[key])
+            }
           })
         }
-        else{
+        else {
           showTexts = [responseData]
         }
       }
-      else{
+      else {
         showTexts = ["Something went wrong!"]
       }
       const fetchErrors = useFetchErrors()
