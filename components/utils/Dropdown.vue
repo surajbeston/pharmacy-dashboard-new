@@ -17,7 +17,7 @@
                 leave-to-class="opacity-0">
 
                 <div v-show="openDropdown"
-                    class="z-10 absolute top-full left-0 w-full bg-white border border-gray-200 pb-1.5 rounded shadow-lg overflow-scroll mt-1 max-h-[300px]">
+                    class="z-30 absolute top-full left-0 w-full bg-white border border-gray-200 pb-1.5 rounded shadow-lg overflow-scroll mt-1 max-h-[300px]">
                     <div class="relative">
                         <input v-model="search" @focus="focusOnFilter()" @blur="focusedOnFilter = false" id="small"
                             class="form-input w-full px-2 py-1 sticky top-0 shadow-sm" type="text"

@@ -67,6 +67,10 @@
                                     <div v-else-if="feature.type == 'datetime'">
                                         {{ new Date(object[feature.name]).toDateString() }}
                                     </div>
+                                    <div v-else-if="feature.type == 'boolean'">
+                                        <span v-if="object[feature.name]">Yes</span>
+                                        <span v-else>No</span>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>

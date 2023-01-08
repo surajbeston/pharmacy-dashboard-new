@@ -65,7 +65,7 @@
                     <img class="h-[24px] w-[24px]" :src="`/icons/${page.icon}`" />
                     <span
                       class="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">{{
-    page.name
+  page.name
                       }}</span>
                   </div>
                 </a>
@@ -82,42 +82,47 @@
 const sidebarOpen = ref(true);
 
 const pages = ref([
-    {
-        'name': 'Dashboard',
-        'icon': 'dashboard.png',
-        'url': '/'
-    },
-    {
-        'name': 'Medicine',
-        'icon': 'medicine.png',
-        'url': '/medicine'
-    },
-    {
-        'name': 'Manufacturer',
-        'icon': 'manufacturer.png',
-        'url': '/manufacturer'
-    },
-    {
-        'name': 'Orders',
-        'icon': 'manufacturer.png',
-        'url': '/order'
-    },
-    
-    {
-        'name': 'Sign In',
-        'icon': 'signin.png',
-        'url': '/signin'
-    },
-    {
-        'name': 'Purchase',
-        'icon': 'purchase.png',
-        'url': '/purchase'
-    }
-    ,{
-        'name': 'Supplier',
-        'icon': 'supplier.png',
-        'url': '/supplier'
-    }
+  {
+    'name': 'Dashboard',
+    'icon': 'dashboard.png',
+    'url': '/'
+  },
+  {
+    'name': 'Medicine',
+    'icon': 'medicine.png',
+    'url': '/medicine'
+  },
+  {
+    'name': 'Manufacturer',
+    'icon': 'manufacturer.png',
+    'url': '/manufacturer'
+  },
+  {
+    'name': 'Orders',
+    'icon': 'manufacturer.png',
+    'url': '/order'
+  },
+
+  {
+    'name': 'Sign In',
+    'icon': 'signin.png',
+    'url': '/signin'
+  },
+  {
+    'name': 'Purchase',
+    'icon': 'purchase.png',
+    'url': '/purchase'
+  }
+  , {
+    'name': 'Supplier',
+    'icon': 'supplier.png',
+    'url': '/supplier'
+  }
+  , {
+    'name': 'Supplier Order',
+    'icon': 'supplier.png',
+    'url': '/supplier-order'
+  }
 ])
 
 const currentPage = ref('')

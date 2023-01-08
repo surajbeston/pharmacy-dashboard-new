@@ -34,7 +34,7 @@
                     <div>
                       <label class="block text-sm font-medium mb-1" for="mandatory">Medicines<span
                           class="text-red-500"></span></label>
-                      <ManyToMany :initial-objects="selectedMedicines" :objects-url="`/meds/medicine/with_initial/`"
+                      <ManyToMany :initial-objects="selectedMedicines" :objects="availableMedicines"
                         name-attribute="brand_name" value-attribute="slug" @object-selected="getMedicines"></ManyToMany>
 
                     </div>
@@ -126,7 +126,7 @@
             </div>
           </div>
           <hr class="m-10"/>
-          <SupplierStock :supplier="supplier" :medicines="selectedMedicines"></SupplierStock>
+          <SupplierStock  :supplier="supplier" :medicines="selectedMedicines"></SupplierStock>
           <SupplierOrders :supplier="supplier"></SupplierOrders>
         </div>
       </div>
@@ -167,6 +167,7 @@ onMounted(() => {
 const { results: manufacturers } = await useBaseFetch(`/admin-api/meds/manufacturer/?limit=1000000`)
 const selectedManufacturers = ref([])
 const selectedMedicines = ref([])
+const availableMedicines = ref([])
 
 async function getSupplier() {
   try {
@@ -175,12 +176,18 @@ async function getSupplier() {
 
     response.manufacturers.forEach((manufacturerId) => {
       useBaseFetch(`/admin-api/meds/manufacturer/${manufacturerId}/`).then((manufacturer) => {
+        useBaseFetch(`/admin-api/meds/medicine/?manufacturer=${manufacturerId}`).then((medicines) => {
+          medicines.results.forEach((med) => availableMedicines.value.push(med))
+        })
         selectedManufacturers.value.push(manufacturer)
       })
     })
 
     response.medicines.forEach((medicineId) => {
-      useBaseFetch(`/admin-api/meds/medicine/${medicineId}/`).then((medicine) => {
+      useBaseFetch(`/admin-api/meds/medicine/${medicineId}/`).then(async (medicine) => {
+        var response = await useBaseFetch(`/admin-api/meds/medicine/${medicine.slug}/ordered_quantity/`)
+        medicine.quantity_ordered = response.total_quantity
+        medicine.totalQuantity = medicine.quantity_ordered + medicine.quantity
         selectedMedicines.value.push(medicine)
       })
     })

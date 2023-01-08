@@ -17,7 +17,7 @@
                 leave-to-class="opacity-0">
 
                 <div v-show="openDropdown"
-                    class="z-20 absolute top-full left-0 w-full bg-white border border-gray-200 pb-1.5 rounded shadow-lg overflow-scroll mt-1 max-h-[300px]">
+                    class="z-30 absolute top-full left-0 w-full bg-white border border-gray-200 pb-1.5 rounded shadow-lg overflow-scroll mt-1 max-h-[300px]">
                     <div class="relative">
                         <input v-model="initialText" @focus="focusOnFilter()" @blur="focusedOnFilter = false" id="small"
                             class="form-input w-full px-2 py-1 sticky top-0 shadow-sm" type="text"
@@ -61,7 +61,7 @@ const listObjects = ref([])
 const selectedObjectName = ref('Select Item')
 
 watch(initialText, async (text) => {
-    if (text) {
+    if (text && props.objectsUrl) {
         try {
             listObjects.value = await useBaseFetch(props.objectsUrl, {
                 method: 'POST',
@@ -69,7 +69,7 @@ watch(initialText, async (text) => {
             })
         }
         catch (err) {
-            console.log(err.response)
+            console.log(err)
         }
     }
 })

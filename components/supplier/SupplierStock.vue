@@ -36,19 +36,27 @@
                                     <tbody>
                                         <tr v-show="openAccordion" v-for="medicine in supplierMedicines"
                                             :key="medicine.slug" class="ml-10"
-                                            :class="{ 'bg-red-200': medicine.quantity <= 0 }">
+                                            :class="{ 'bg-red-200': medicine.totalQuantity <= 0 }">
                                             <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-[10%]">
                                                 <input v-model="medicine.selected" type="checkbox"
                                                     class="form-checkbox" />
                                             </td>
                                             <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-[10%]">
-                                                Medicine Slug: <span class="font-bold">{{ medicine.slug }}</span>
+                                                Medicine:
+                                                <a :href="`/medicine/${medicine.slug}`" class="underline"> <span
+                                                        class="font-bold">{{
+                                                            medicine.brand_name
+                                                        }}</span></a>
                                             </td>
                                             <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-[10%]">
-                                                Brand Name: <span class="font-bold">{{ medicine.brand_name }}</span>
+                                                Available Quantity: <span class="font-bold">{{
+                                                    medicine.quantity
+                                                }}</span>
                                             </td>
                                             <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap w-[10%]">
-                                                Quantity: <span class="font-bold">{{ medicine.quantity }}</span>
+                                                Ordered Quantity: <span class="font-bold">{{
+                                                    medicine.quantity_ordered
+                                                }}</span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -59,7 +67,7 @@
                 </tbody>
             </table>
             <div v-show="openAccordion" class="flex justify-end m-5">
-                <button @click="showReorderModal = true"
+                <button @click="initiateOrder" 
                     class="btn-sm bg-indigo-500 hover:bg-indigo-600 text-white">Reorder Selected</button>
             </div>
         </div>
@@ -97,23 +105,33 @@ const deleteInfo = ref(' ')
 const showDeleteModal = ref(false)
 const deleteUrl = ref('')
 
+const errors = useFetchErrors()
+
 const supplierMedicines = computed(() => {
-    var meds = props.medicines
-    meds.forEach((med) => {
+    var meds = JSON.parse(JSON.stringify(props.medicines))
+    meds.forEach(async (med) => {
         med.selected = false
     })
+    console.log("changed")
     return meds
 })
 
 
 const showReorderModal = ref(false)
-const selectedMedicines = computed(() => {
-    var meds = supplierMedicines.value.filter(med => med.selected)
-    meds.forEach((med) => {
-        med.quantityToOrder = 0
+const selectedMedicines = ref([])
+
+function initiateOrder() {
+    var selected = false
+    selectedMedicines.value = []
+    supplierMedicines.value.forEach((med) => {
+        if (med.selected) {
+            selectedMedicines.value.push(med)
+            selected = true
+        }
     })
-    return meds
-})
+    if (selected) showReorderModal.value = true
+    else errors.value.push("Select medicine before ordering.")
+}
 
 async function orderMedicines() {
     var supplierOrder = await useBaseFetch(`/admin-api/meds/supplierorder/`, {
@@ -125,9 +143,9 @@ async function orderMedicines() {
             method: 'POST',
             body: { 'supplier_order': supplierOrder.id, 'quantity': med.quantityToOrder, 'medicine': med.slug, 'unit_price': 5 }
         })
-        console.log(response)
     })
     showReorderModal.value = false
+    location.reload()
 }
 
 

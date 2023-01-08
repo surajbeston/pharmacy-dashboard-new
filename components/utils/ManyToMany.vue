@@ -9,7 +9,7 @@
         </div>
         <div class="flex flex-wrap m-5 gap-5">
             <div v-for="object in selectedObjects" :key="object[valueAttribute]"
-                class="inline-flex min-w-80 px-4 py-2 rounded-sm text-sm bg-white shadow-lg border border-gray-200 text-gray-600">
+                class="inline-flex min-w-80 px-4 py-2 rounded-sm text-sm  shadow-lg border border-gray-200 text-gray-600 bg-blue-100">
                 <div class="flex w-full justify-between items-start">
                     <div class="flex">
                         <div>{{ object[nameAttribute] }}</div>

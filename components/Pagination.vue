@@ -80,11 +80,14 @@ watch(props, (next) => {
         paginationOffsetRight.value = offset
     }
     else if (previousPage.value) {
-        var limit = getParameterByName("limit", previousPage.value)
-        var offset = getParameterByName("offset", previousPage.value)
-
+        var limit = getParameterByName("limit", previousPage.value) ? getParameterByName("limit", previousPage.value) : 0
+        var offset = getParameterByName("offset", previousPage.value) ? getParameterByName("offset", previousPage.value) : 0
+        
         paginationOffsetLeft.value = parseInt(offset) + parseInt(limit) + 1
         paginationOffsetRight.value = parseInt(offset) + parseInt(limit) + parseInt(limit)
+        if (paginationOffsetRight.value > pageCount.value){
+            paginationOffsetRight.value = pageCount.value
+        }
     }
 })
 
