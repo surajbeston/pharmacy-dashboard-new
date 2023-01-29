@@ -5,7 +5,7 @@
                 class="btn w-full flex  min-w-44 bg-white border-gray-200 button-border hover:border-gray-300 text-gray-500 hover:text-gray-600 make-difference"
                 aria-label="Select date range" aria-haspopup="true">
                 <span class="flex ">
-                    <span>{{ selectedObjectName }} ({{ selectedObject }})</span>
+                    <span>{{ showText }}</span>
                 </span>
                 <svg class="shrink-0 ml-1 fill-current text-gray-400" width="11" height="7" viewBox="0 0 11 7">
                     <path d="M5.4 6.8L0 1.4 1.4 0l4 4 4-4 1.4 1.4z" />
@@ -28,7 +28,7 @@
                                 class="flex items-center justify-between w-full hover:bg-gray-50 py-2 px-3 cursor-pointer"
                                 @click="selectObject(object[valueAttribute])">
                                 <span :class="{ 'text-indigo-500': object[valueAttribute] == selectedObject }">{{
-                                        object[nameAttribute]
+                                    object[nameAttribute]
                                 }}</span>
                                 <svg class="shrink-0 ml-2 fill-current "
                                     :class="{ 'text-indigo-500': object[valueAttribute] == selectedObject }" width="12"
@@ -62,6 +62,7 @@ const listObjects = ref([])
 
 const selectedObjectName = ref('Select Item')
 
+
 watch(results, (res) => {
     if (res.length > 0) {
         listObjects.value = res
@@ -73,7 +74,11 @@ watch(results, (res) => {
 
 onMounted(() => {
     listObjects.value = props.objects
-
+    if (props.initialObject) {
+        selectedObject.value = props.initialObject[props.valueAttribute]
+        selectedObjectName.value = props.initialObject[props.nameAttribute]
+    }
+    showText.value = props.showText
 })
 
 watch(() => props.initialObject, () => {
@@ -97,6 +102,21 @@ const focusedOnFilter = ref(false)
 function focusOnFilter() {
     focusedOnFilter.value = true
 }
+
+const showText = ref('Select Item')
+watch(selectedObject, () => {
+    showText.value = getShowText(selectedObjectName.value, selectedObject.value)
+})
+
+function getShowText(name, value) {
+    if (typeof(value) == 'number'){
+        return `${name} (${value})`
+    }
+    else{
+        return `${name}`
+    }
+}
+   
 
 function closeDropdown() {
     setTimeout(() => {

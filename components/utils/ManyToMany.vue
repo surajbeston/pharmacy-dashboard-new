@@ -8,8 +8,9 @@
                 :value-attribute="valueAttribute" @selected-object="addObject"></Dropdown>
         </div>
         <div class="flex flex-wrap m-5 gap-5">
-            <div v-for="object in selectedObjects" :key="object[valueAttribute]"
-                class="inline-flex min-w-80 px-4 py-2 rounded-sm text-sm  shadow-lg border border-gray-200 text-gray-600 bg-blue-100">
+            <div v-for="object in sortedObjects" :key="object[valueAttribute]"
+                class="inline-flex min-w-80 px-4 py-2 rounded-sm text-sm  shadow-lg border border-gray-200 text-gray-600 bg-blue-100"
+                :class="{ 'bg-green-400': object.justAdded }">
                 <div class="flex w-full justify-between items-start">
                     <div class="flex">
                         <div>{{ object[nameAttribute] }}</div>
@@ -33,10 +34,11 @@
 //addition of "objectsUrl" field will use AsyncDropdown instead of Dropdown
 //to use base Dropdown "objects" should be passed and "objectsUrl" should be ignored
 
+import consolaGlobalInstance from 'consola';
 import AsyncDropdown from './AsyncDropdown.vue';
 import Dropdown from './Dropdown.vue';
 
-const props = defineProps(["objectsUrl", "objects", "nameAttribute", "valueAttribute", "initialObjects"])
+const props = defineProps(["objectsUrl", "objects", "nameAttribute", "valueAttribute", "initialObjects", "sort"])
 const emit = defineEmits(["objectSelected"])
 
 const showAsyncDropdown = ref('false')
@@ -44,21 +46,47 @@ const dropdownObjects = ref([])
 
 const selectedObjects = ref([])
 
+const errorMessages = useFetchErrors()
+
 onMounted(async () => {
     if (props.objectsUrl) {
-        
+
     }
     else {
         showAsyncDropdown.value = false
         dropdownObjects.value = props.objects
     }
-    if (props.initialObjects) selectedObjects.value = props.initialObjects
+    if (props.initialObjects) {
+        selectedObjects.value = props.initialObjects
+    }
+})
+
+const sortedObjects = computed(() => {
+    if (props.sort) {
+        return selectedObjects.value.sort((a, b) => a[props.nameAttribute] > b[props.nameAttribute] ? 1 : a[props.nameAttribute] < b[props.nameAttribute] ? -1 : 0)
+    }
+    else {
+        return selectedObjects.value
+    }
 })
 
 function addObject(object) {
-    if (selectedObjects.value.indexOf(object) == -1) {
+    var contains = false
+    selectedObjects.value.forEach((each) => {
+        if (each[props.valueAttribute] == object[props.valueAttribute]) {
+            contains = true
+        }
+    })
+    console.log(selectedObjects.value)
+    console.log(object)
+    console.log(contains)
+    if (!contains) {
+        object.justAdded = true
         selectedObjects.value.push(object)
         emitObjectValues()
+    }
+    else{
+        errorMessages.value.push(`${object[props.nameAttribute]} is already present.`)
     }
 }
 

@@ -3,7 +3,7 @@
         <div id="danger-modal"
             class="fixed inset-0 z-50 overflow-hidden flex items-center justify-center transform px-4 sm:px-6 bg-slate-300/50"
             role="dialog" aria-modal="true" v-show="showModal">
-            <div class="bg-white rounded shadow-lg overflow-auto max-w-lg w-full max-h-full">
+            <div class="bg-white rounded shadow-lg overflow-auto max-w-lg w-full max-h-full" :class="{'max-w-[700px]': large}" >
                 <div class="p-5 flex space-x-4">
                     <!-- Icon -->
                     <!-- <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 bg-red-100">
@@ -13,7 +13,7 @@
                         </svg>
                     </div> -->
                     <!-- Content -->
-                    <div>
+                    <div class="w-full">
                         <!-- Modal header -->
                         <div class="mb-2">
                             <div class="text-lg font-semibold text-gray-800">{{ infoTitle }}</div>
@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-const props = defineProps(["infoTitle", "showModal", "showCancel"])
+const props = defineProps(["infoTitle", "showModal", "showCancel", "large"])
 const emit = defineEmits(["cancelled"])
 
 const deleting = ref(false)

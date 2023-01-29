@@ -28,9 +28,22 @@
                                 type="text" required />
                         </div>
                         <div>
-                            <label class="block text-sm font-medium mb-1" for="mandatory">Initial Quantity<span
+                            <label class="block text-sm font-medium mb-1" for="mandatory">Total Quantity<span
                                     class="text-red-500">*</span></label>
-                            <input v-model="purchaseItem.initial_quantity" id="mandatory" class="form-input w-full"
+                            <input v-model="purchaseItem.total_quantity" id="mandatory" class="form-input w-full"
+                                type="number" required disabled />
+                            <div class="text-xs mt-1">Ready only. It is the sum of paid quantity and free quantity.</div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1" for="mandatory">Paid Quantity<span
+                                    class="text-red-500">*</span></label>
+                            <input v-model="purchaseItem.paid_quantity" id="mandatory" class="form-input w-full"
+                                type="number" required />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1" for="mandatory">Free Quantity<span
+                                    class="text-red-500">*</span></label>
+                            <input v-model="purchaseItem.free_quantity" id="mandatory" class="form-input w-full"
                                 type="number" required />
                         </div>
                         <div>
@@ -62,13 +75,11 @@
                             <input v-model="purchaseItem.cost_price" id="mandatory" class="form-input w-full"
                                 type="number" required />
                         </div>
-
-                        
                     </div>
                 </div>
             </div>
         </div>
-        
+
     </div>
 </template>
 
@@ -88,6 +99,9 @@ function selectMedicine(medicine) {
 
 const selectedMedicine = ref('')
 
+watch(() => props.purchaseItem.received_datetime, (datetime) => {
+    console.log(datetime)
+})
 
 
 </script>

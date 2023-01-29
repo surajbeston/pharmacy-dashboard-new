@@ -1,9 +1,9 @@
 <template>
-    <div class=" ml-10 rounded-sm border border-gray-300 bg-gray-100" >
+    <div class=" ml-10 rounded-sm border border-gray-300 bg-gray-100">
         <div class="overflow-x-auto">
             <table class="table-auto w-full divide-y divide-gray-200">
                 <tbody class="text-sm">
-                    <tr :class="{'bg-red-200': errorOccured}">
+                    <tr :class="{ 'bg-red-200': errorOccured }">
                         <td class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                             <div class="text-left "># {{ purchaseItem?.medicine?.brand_name }}</div>
                         </td>
@@ -33,7 +33,10 @@
                     </tr>
                 </tbody>
             </table>
-            <div v-show="openAccordion" class="flex justify-end m-5">
+            <div v-show="openAccordion" class="flex justify-end m-5 gap-5">
+                <button v-if="purchaseItem.id" @click="updateItem()"
+                    class="btn-sm bg-green-500 hover:bg-green-600 text-white">Update Item</button>
+
                 <button v-if="purchaseItem.id" @click="initiateDelete()"
                     class="btn-sm bg-red-500 hover:bg-red-600 text-white">Delete Item</button>
                 <button v-else @click="removeItem()" class="btn-sm bg-red-500 hover:bg-red-600 text-white">Remove
@@ -101,6 +104,7 @@ $bus.$on('saveItem', (data) => {
         delete item.id
         delete item.purchase_lot
 
+
         useBaseFetch(`/admin-api/meds/purchaseitem/${id}/`, {
             method: 'PATCH',
             body: item
@@ -127,5 +131,25 @@ $bus.$on('saveItem', (data) => {
         })
     }
 })
+
+function updateItem() {
+    var item = Object.assign({}, props.purchaseItem)
+    item.medicine = item.medicine.slug
+    var id = item.id
+    delete item.id
+    delete item.purchase_lot
+
+
+    useBaseFetch(`/admin-api/meds/purchaseitem/${id}/`, {
+        method: 'PATCH',
+        body: item
+    }).then((response) => {
+        console.log(response)
+    }).catch(err => {
+        errorOccured.value = true
+    })
+}
+
+
 
 </script>

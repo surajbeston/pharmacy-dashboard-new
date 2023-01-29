@@ -4,7 +4,7 @@
             <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
                 <div class="mb-8">
                     <h1 class="text-2xl md:text-3xl text-gray-800 font-bold">
-                        #{{ purchaseLot.id }}
+                        #{{ purchaseLot.id }} 
                     </h1>
                 </div>
 
@@ -14,9 +14,8 @@
                             <div style="display: flex; flex-direction: column" class="grid gap-5 md:grid-cols-3">
                                 <div class="flex flex-col gap-5">
                                     <div v-show="id != 'new'">
-                                        <label class="block text-sm font-medium mb-1" for="mandatory">Datetime
-                                            Added<span class="text-red-500">*</span></label>
-                                        <input v-model="datetime" class="form-input w-60" type="datetime-local" />
+                                        <label class="block text-sm font-medium mb-1" for="mandatory">Datetime Generated<span class="text-red-500">*</span></label>
+                                        <input v-model="generated_datetime" class="form-input w-60" type="datetime-local" />
                                     </div>
                                     <div>
                                         <div class="max-w-[400px]">
@@ -29,10 +28,27 @@
                                         <label class="block text-sm font-medium mb-1" for="mandatory">Supplier<span
                                                 class="text-red-500">*</span></label>
                                         <Dropdown :objects="suppliers" name-attribute="name" value-attribute="id"
-                                            @selected-object="selectSupplier" :initial-object="purchaseLotSupplier">
+                                            @selected-object="selectSupplier" :initial-object="purchaseLot.supplier">
                                         </Dropdown>
                                     </div>
-
+                                    <div>
+                                        <div class="max-w-[400px]">
+                                            <label class="block text-sm font-medium mb-1" for="mandatory">Datetime
+                                                Received</label>
+                                            <input v-model="received_datetime" id="mandatory" 
+                                                class="form-input w-full" type="datetime-local" required />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="max-w-[400px]">
+                                            <label class="block text-sm font-medium mb-1" for="mandatory">Received
+                                                By</label>
+                                            <AsyncDropdown objects-url="/admin-api/meds/myuser/"
+                                                name-attribute="phone_number" value-attribute="id" method="get"
+                                                initial-text="9" :initial-object="purchaseLot.received_by" @selected-object="selectReceivedBy">
+                                            </AsyncDropdown>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div>
                                 </div>
@@ -59,6 +75,9 @@
 <script setup>
 import ConfirmDeleteModal from '~~/components/utils/ConfirmDeleteModal.vue';
 import Dropdown from '~~/components/utils/Dropdown.vue';
+import AsyncDropdown from '~~/components/utils/AsyncDropdown.vue';
+
+
 const { $bus } = useNuxtApp()
 const dropdownLoaded = ref(false)
 const route = useRoute()
@@ -68,23 +87,42 @@ const purchaseLot = ref([])
 const { results: suppliers } = await useBaseFetch(`/admin-api/meds/supplier/?limit=100000`)
 // const { results: medicines } = await useBaseFetch(`/admin-api/meds/medicine/?limit=10000000`)
 
-const datetime = computed(() => {
-    if (purchaseLot.value.datetime_added) {
-        return purchaseLot.value.datetime_added.split(".")[0]
+const generated_datetime = computed({
+    get() {
+        if (purchaseLot.value.datetime_generated) {
+            return purchaseLot.value.datetime_generated.split(".")[0].replace("Z", "")
+        }
+    },
+    set(datetime) {
+        purchaseLot.value.datetime_generated = datetime
+        console.log("saved", purchaseLot.value.generated_datetime)
     }
 })
 
-onMounted( async () => {
-    if (id == 'new'){
+const received_datetime = computed({
+    get() {
+        if (purchaseLot.value.received_datetime) {
+            return purchaseLot.value.received_datetime.split(".")[0].replace("Z", "")
+        }
+    },
+    set(datetime) {
+        purchaseLot.value.received_datetime = datetime
+        console.log("saved", purchaseLot.value.received_datetime)
+    }
+})
+
+onMounted(async () => {
+    if (id == 'new') {
         purchaseLot.value = {
             supplier: {},
             extras: "",
             purchaseitem_set: []
         }
     }
-    else{
+    else {
         purchaseLot.value = await useBaseFetch(`/admin-api/meds/purchaselot/${id}`)
     }
+    console.log(purchaseLot.value)
 })
 
 function selectSupplier(supplier) {
@@ -93,35 +131,49 @@ function selectSupplier(supplier) {
 
 const purchaseLotSupplier = computed(() => {
     if (purchaseLot) {
-        
+
         var supplier = suppliers.filter((supplier) => {
             return supplier.id == purchaseLot.value.supplier
         })
+        console.warn(supplier)
         if (supplier.length > 0) return supplier[0]
     }
 })
 
+
+function selectReceivedBy(receivedBy) {
+    purchaseLot.value.received_by = receivedBy
+}
+
 async function savePurchaseLot() {
-    var data = purchaseLot
+    var data = JSON.parse(JSON.stringify(purchaseLot.value))
     try {
-        if (purchaseLot.value.id) {
+        if (data.id) {
+            delete data.id
+            delete data.purchaseitem_set
+            if (data.supplier) data.supplier = data.supplier.id
+            if (data.received_by) data.received_by = data.received_by.id
+            
+            console.log(data)
+
             var currentPurchaseLot = await useBaseFetch(`/admin-api/meds/purchaselot/${purchaseLot.value.id}/`, {
-                method: 'PATCH',
-                body: {id: purchaseLot.value.id, supplier: purchaseLot.value.supplier?.id, extras: purchaseLot.value.extras}
+                method: 'patch',
+                body: data
             })
+            console.log(currentPurchaseLot)
         }
         else {
             console.log(purchaseLot.value)
             var currentPurchaseLot = await useBaseFetch(`/admin-api/meds/purchaselot/`, {
                 method: 'POST',
-                body: { supplier: purchaseLot.value.supplier?.id, extras: purchaseLot.value.extras}
+                body: { supplier: purchaseLot.value.supplier?.id, extras: purchaseLot.value.extras }
             })
         }
     }
     catch (err) {
         console.log(err.response)
     }
-    $bus.$emit('saveItem', { purchaseLot : currentPurchaseLot })
+    // $bus.$emit('saveItem', { purchaseLot: currentPurchaseLot })
 }
 
 
@@ -148,8 +200,8 @@ const savedPurchaseItems = ref([])
 
 $bus.$on("itemSaved", (response) => {
     savedPurchaseItems.value.push(response)
-    
-    if (savedPurchaseItems.value.length == purchaseLot.value.purchaseitem_set.length){
+
+    if (savedPurchaseItems.value.length == purchaseLot.value.purchaseitem_set.length) {
         const router = useRouter()
         router.push(`/purchase/${response.purchase_lot}`)
     }

@@ -29,7 +29,7 @@
                 </div>
                 <div class="border-t border-gray-200">
                     <a class="block text-center text-sm text-indigo-500 hover:text-indigo-600 font-medium px-3 py-4"
-                        :href="`/supplierorderitem/${order.id}`">
+                        :href="`/supplier-order/${order.id}`">
                         <div class="flex items-center justify-center">
                             <span>View</span>
                         </div>

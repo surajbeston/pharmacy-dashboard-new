@@ -30,7 +30,7 @@ const paginationData = ref([])
 const features = ref([{ "name": "id", "type": "key", "url": "/purchase/__id__" },
 {"name": "supplier", "type": "link", "link_id": "supplier_id", "url": "/supplier/__id__"},
 { "name": "extras", "type": "text" },
-{ "name": "datetime_added", "type": "datetime" }])
+{ "name": "received_datetime", "type": "datetime" }])
 
 const loading = ref(true)
 
@@ -42,6 +42,7 @@ onMounted(() => {
 async function getPurchaseLots(url) {
     loading.value = true
     paginationData.value = await useBaseFetch(url)
+    console.log(paginationData.value)
     paginationData.value.results.forEach(element => {
         element.selected = false
     });

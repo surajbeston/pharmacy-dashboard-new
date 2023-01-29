@@ -35,7 +35,7 @@
                       <label class="block text-sm font-medium mb-1" for="mandatory">Medicines<span
                           class="text-red-500"></span></label>
                       <ManyToMany :initial-objects="selectedMedicines" :objects="availableMedicines"
-                        name-attribute="brand_name" value-attribute="slug" @object-selected="getMedicines"></ManyToMany>
+                        name-attribute="brand_name" value-attribute="slug" @object-selected="getMedicines" :sort="true"></ManyToMany>
 
                     </div>
                   </div>
@@ -54,7 +54,21 @@
                     <label class="block text-sm font-medium mb-1" for="default">Address</label>
                     <input v-model="supplier.address" id="default" class="form-input w-full" type="text" />
                   </div>
+
                   <!-- End -->
+                </div>
+
+                <div>
+                  <div>
+                    <label class="block text-sm font-medium mb-1" for="default">Email</label>
+                    <input v-model="supplier.email" id="default" class="form-input w-full" type="email" />
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <label class="block text-sm font-medium mb-1" for="default">Phone Number</label>
+                    <input v-model="supplier.phone_number" id="default" class="form-input w-full" type="text" />
+                  </div>
                 </div>
 
                 <div style="display: flex">

@@ -15,16 +15,22 @@
                         {{ alphabet }}
                     </button>
                 </div>
+                <div class="flex justify-end gap-5 mt-5">
+                    <CountriesDropdown @selected-nation="filterByNationality"></CountriesDropdown>
+                    <a href="/manufacturer/new"> <button class="btn bg-indigo-500 hover:bg-indigo-600 text-white">Create
+                            Manufacturer</button>
+                    </a>
+                </div>
                 <div v-if="!loading" class="mt-8">
                     <h2 class="text-xl leading-snug text-gray-800 font-bold mb-5">
-                        Manufacturers that starts with '<span class="uppercase">{{ currentInitialLetters }}</span>'
+                        <!-- Manufacturers that starts with '<span class="uppercase">{{ currentInitialLetters }}</span>' -->
                     </h2>
                     <div class="grid grid-cols-12 gap-6">
                         <div v-for="manufacturer in manufacturers" :key="manufacturer.id"
                             class="col-span-full sm:col-span-6 xl:col-span-3 bg-white shadow-lg rounded-sm border border-gray-200 overflow-hidden">
                             <div class="flex flex-col h-full">
-                                <img class="w-full h-[200px] object-contain" :src="getImage(manufacturer.image)"
-                                    width="286" height="160" alt="Application 01" />
+                                <img class="w-full h-[200px] object-contain" :src="getImage(manufacturer)" width="286"
+                                    height="160" alt="Application 01" />
                                 <div class="grow flex flex-col p-5">
                                     <div class="grow">
                                         <header class="mb-3">
@@ -56,7 +62,8 @@
                     </svg>
                     <span class="sr-only">Loading...</span>
                 </div>
-
+                <Pagination v-show="showPagination" class="mt-5" :data="paginationData" @another-page="gotoAnotherPage">
+                </Pagination>
             </div>
 
         </main>
@@ -64,6 +71,9 @@
 </template>
 
 <script setup>
+
+import CountriesDropdown from '~~/components/utils/CountriesDropdown.vue';
+
 const currentPage = useCurrentPage()
 const apiURL = useApiURL()
 const currentInitialLetters = ref('a')
@@ -71,6 +81,9 @@ const alphabets = ref(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l
 
 const manufacturers = ref([])
 const loading = ref(true)
+
+const paginationData = ref({})
+const showPagination = ref(false)
 
 
 onMounted(() => {
@@ -80,6 +93,7 @@ onMounted(() => {
 
 async function retrieveManufacturers(alphabet) {
     loading.value = true
+    showPagination.value = false
     currentInitialLetters.value = alphabet
     try {
         manufacturers.value = await useBaseFetch(`/meds/manufacturer/with_initial/`, {
@@ -87,15 +101,24 @@ async function retrieveManufacturers(alphabet) {
             body: { 'initial_letters': alphabet }
         })
     }
-    catch(err) {
+    catch (err) {
         console.log(err.response)
     }
     loading.value = false
 }
 
-function getImage(image) {
-    if (image) {
-        return `${apiURL.value}/static/manufacturers/${image}`
+const imageRoot = useImageRoot()
+
+function getImage(manufacturer) {
+    console.log(manufacturer)
+    if (manufacturer.image) {
+        if (manufacturer.image.includes(apiURL.value)) {
+            return manufacturer.image
+        }
+        return `${apiURL.value}${manufacturer.image}`
+    }
+    else if (manufacturer.default_image) {
+        return `${imageRoot.value}/static/manufacturers/${manufacturer.default_image}`
     }
     else {
         return '/images/manufacturer2.svg'
@@ -104,4 +127,37 @@ function getImage(image) {
 function getEditLink(manufacturer) {
     return `/manufacturer/${manufacturer.id}/`
 }
+
+var filterText = ""
+var currentNation = ""
+
+function filterByNationality(nation) {
+    currentNation = nation.value
+    filter()
+}
+
+async function filter() {
+    showPagination.value = true
+    currentInitialLetters.value = ""
+    filterText = ""
+    if (currentNation) filterText += `nationality=${currentNation}`
+
+    paginationData.value = await useBaseFetch(`/admin-api/meds/manufacturer/?${filterText}`)
+    manufacturers.value = paginationData.value.results
+}
+
+const countries = computed(() => {
+    return countryList.map((each) => {
+        return { name: each, value: each }
+    })
+})
+
+
+async function gotoAnotherPage() {
+    paginationData.value = await useBaseFetch(url)
+    manufacturers.value = paginationData.value.results
+}
+
+
+
 </script>

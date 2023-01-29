@@ -73,8 +73,16 @@
                             </div>
                         </div>
                     </div>
-
-                    <ManufacturerDropdown @selected-manufacturer-id="filterByManufacturer"></ManufacturerDropdown>
+                    <div class="flex justify-end gap-5">
+                        <Indication @changed="filterByIndications"></Indication>
+                        <CountriesDropdown @selected-nation="filterByNationality"></CountriesDropdown>
+                        <AsyncDropdown show-text="Manufacturer" method="post"
+                            objects-url="/meds/manufacturer/with_initial/" name-attribute="name" value-attribute="id"
+                            @selected-object="filterByManufacturer">
+                        </AsyncDropdown>
+                        <Dropdown show-text=" Class" :objects="medicineClasses" value-attribute="class"
+                            name-attribute="name" @selected-object="filterByClass"></Dropdown>
+                    </div>
                     <div v-if="!loading" class="mt-8">
 
                         <!-- <h2 class="text-xl leading-snug text-gray-800 font-bold mb-5" x-text="headText">
@@ -84,12 +92,13 @@
                                 class="col-span-full sm:col-span-6 xl:col-span-3 bg-white shadow-lg rounded-sm border border-gray-200 overflow-hidden">
                                 <div class="flex flex-col h-full">
                                     <img class="w-full h-[200px] object-contain"
-                                        :src="getImage(medicine?.extras?.image)" width="286" height="160"
+                                        :src="getImage(medicine)" width="286" height="160"
                                         alt="Application 01" />
                                     <div class="grow flex flex-col p-5">
                                         <div class="grow">
                                             <header class="mb-3">
-                                                <h3 class="text-lg text-gray-800 font-semibold">{{ medicine.brand_name
+                                                <h3 class="text-lg text-gray-800 font-semibold">{{
+                                                    medicine.brand_name
                                                 }}</h3>
                                             </header>
                                             <div class="flex flex-wrap justify-between items-center mb-4">
@@ -148,9 +157,9 @@
 
                 </div>
             </main>
-            <Pagination :data="paginationData" @another-page="gotoAnotherPage" ></Pagination>
+            <Pagination :data="paginationData" @another-page="gotoAnotherPage"></Pagination>
         </div>
-        
+
     </div>
 
 
@@ -158,7 +167,10 @@
 
 <script setup>
 import ManufacturerDropdown from '~~/components/utils/ManufacturerDropdown.vue';
-
+import Dropdown from '~~/components/utils/Dropdown.vue';
+import AsyncDropdown from '~~/components/utils/AsyncDropdown.vue';
+import Indication from '~~/components/medicine/Indication.vue';
+import CountriesDropdown from '~~/components/utils/CountriesDropdown.vue';
 
 const thisCurrentPage = useCurrentPage()
 
@@ -172,9 +184,15 @@ const showSuggestions = ref(false)
 const suggestions = ref([])
 const paginationData = ref({})
 
-async function gotoAnotherPage(url){
+const filterText = ref("")
+
+const medicineClasses = ref([{ name: 'Class 0', class: 0 }, { name: 'Class 1', class: 1 }, { name: 'Class 2', class: 2 }, { name: 'Class 3', class: 3 }])
+
+const imageRoot = useImageRoot()
+
+async function gotoAnotherPage(url) {
     loading.value = true
-    paginationData.value =  await useBaseFetch(url)
+    paginationData.value = await useBaseFetch(url)
     medicines.value = paginationData.value.results
     loading.value = false
 }
@@ -190,8 +208,10 @@ async function gotoAnotherPage(url){
 
 const searchText = ref('')
 
+
 async function search() {
     loading.value = true
+
     if (searchText.value) {
         medicines.value = await useBaseFetch("/meds/medicine/search/", {
             method: 'POST',
@@ -231,7 +251,7 @@ function hideSuggestions() {
 }
 
 async function getSuggestions() {
-    if (searchText.value){
+    if (searchText.value) {
         suggestions.value = await useBaseFetch(`/meds/medicine/suggestions/`, {
             method: 'POST',
             body: { query: searchText.value }
@@ -282,11 +302,49 @@ async function getManufacturers() {
     loading.value = false
 }
 
+const currentMedicineClass = ref(null)
+const currentManufacturer = ref(null)
+const currentIndications = ref([])
+var currentNation = ""
 
+function filterByClass(medicineClass) {
+    currentMedicineClass.value = medicineClass.class
+    filter()
+}
 
-function getImage(image) {
-    if (image) {
-        return `https://pharmacy-ecom.fly.dev/static/medicines/${image}`
+function filterByManufacturer(manufacturer) {
+    currentManufacturer.value = manufacturer.id
+    filter()
+}
+
+function filterByNationality(nation) {
+    currentNation = nation.value
+    filter()
+}
+
+function filterByIndications(indications) {
+    currentIndications.value = indications
+    filter()
+}
+
+async function filter() {
+    filterText.value = ""
+    if (currentMedicineClass.value) filterText.value += `_class=${currentMedicineClass.value}`
+    if (currentManufacturer.value) filterText.value += `&manufacturer=${currentManufacturer.value}`
+    if (currentNation) filterText.value += `&manufacturer__nationality=${currentNation}`
+    if (currentIndications.value.length > 0) filterText.value += `&indications__icontains=${currentIndications.value.join("&indications__icontains=")}`
+    console.log(filterText.value)
+    paginationData.value = await useBaseFetch(`/admin-api/meds/medicine/?${filterText.value}`)
+    medicines.value = paginationData.value.results
+}
+
+function getImage(medicine) {
+    if (medicine.image) {
+        return medicine.image
+
+    }
+    else if (medicine.extras.image) {
+        return `${imageRoot.value}/static/medicines/${medicine.extras.image}`
     }
     else {
         return '../images/medicine2.svg'

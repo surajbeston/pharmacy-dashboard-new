@@ -15,8 +15,10 @@
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.1.3",
     "chart.js": "^4.1.1",
+    "handy-uploader": "^1.1.8",
     "mitt": "^3.0.0",
     "vue-chartjs": "^5.1.0",
-    "vue-fuse": "^4.1.1"
+    "vue-fuse": "^4.1.1",
+    "vue-image-upload-resize": "^2.3.0"
   }
 }

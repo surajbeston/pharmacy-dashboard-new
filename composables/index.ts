@@ -5,6 +5,12 @@ export const useCurrentPage = () => {
 export const useApiURL = () =>
   useState("apiURL", () => "http://localhost:8000");
 
+export const useImageRoot = () =>
+  useState("imageRoot", () => "https://pharmacy-ecom.fly.dev");
+
+export const useUploadedImageRoot = 
+  () => useState("uploadedImageRoot", () => "http://localhost:8000")
+
 export const useBaseFetch = (url: string, options = {}) => {
   const router = useRouter()
   if (!options.headers) {
@@ -43,7 +49,7 @@ export const useBaseFetch = (url: string, options = {}) => {
             }
             else {
               console.log(responseData[key])
-              if (responseData[key] == 'Invalid token.'){
+              if (responseData[key] == 'Invalid token.') {
                 console.log("reached here")
                 console.log("reached here 2")
               }

@@ -5,7 +5,7 @@
                 class="btn w-full flex  min-w-44 bg-white border-gray-200 button-border hover:border-gray-300 text-gray-500 hover:text-gray-600 make-difference"
                 aria-label="Select date range" aria-haspopup="true">
                 <span class="flex ">
-                    <span>{{ selectedObjectName }} ({{ selectedObject }})</span>
+                    <span>{{ showText }} </span>
                 </span>
                 <svg class="shrink-0 ml-1 fill-current text-gray-400" width="11" height="7" viewBox="0 0 11 7">
                     <path d="M5.4 6.8L0 1.4 1.4 0l4 4 4-4 1.4 1.4z" />
@@ -27,9 +27,7 @@
                             <button tabindex="0"
                                 class="flex items-center justify-between w-full hover:bg-gray-50 py-2 px-3 cursor-pointer"
                                 @click="selectObject(object[valueAttribute])">
-                                <span :class="{ 'text-indigo-500': object[valueAttribute] == selectedObject }">{{
-                                        object[nameAttribute]
-                                }} ({{ object[valueAttribute] }})</span>
+                                <span :class="{ 'text-indigo-500': object[valueAttribute] == selectedObject }">{{  getShowText(object[nameAttribute], object[valueAttribute]) }}</span>
                                 <svg class="shrink-0 ml-2 fill-current "
                                     :class="{ 'text-indigo-500': object[valueAttribute] == selectedObject }" width="12"
                                     height="9" viewBox="0 0 12 9">
@@ -48,7 +46,7 @@
 <script setup>
 
 const emit = defineEmits(["selectedObject"])
-const props = defineProps(["objectsUrl", "showText", "nameAttribute", "valueAttribute", "initialObject"])
+const props = defineProps(["objectsUrl", "showText", "nameAttribute", "valueAttribute", "initialObject", "method", "initialText"])
 const selectedObject = ref(null)
 const loaded = ref(true)
 
@@ -62,24 +60,38 @@ const selectedObjectName = ref('Select Item')
 
 watch(initialText, async (text) => {
     if (text && props.objectsUrl) {
-        try {
-            listObjects.value = await useBaseFetch(props.objectsUrl, {
-                method: 'POST',
-                body: { 'initial_letters': text }
-            })
+        if (props.method == "get") {
+            var response = await useBaseFetch(`${props.objectsUrl}?${props.nameAttribute}__startswith=${text}`)
+            listObjects.value = response.results
         }
-        catch (err) {
-            console.log(err)
+        else {  
+            try {
+                listObjects.value = await useBaseFetch(props.objectsUrl, {
+                    method: 'POST',
+                    body: { 'initial_letters': text }
+                })
+            }
+            catch (err) {
+                console.log(err)
+            }
         }
     }
 })
+
 
 onMounted(() => {
     if (props.initialObject) {
         selectedObject.value = props.initialObject[props.valueAttribute]
         selectedObjectName.value = props.initialObject[props.nameAttribute]
     }
-    initialText.value = "a"
+    if (props.initialText) initialText.value = props.initialText
+    else initialText.value = "a"
+    showText.value = props.showText
+})
+
+watch(() => props.initialObject, (initObj) => {
+    selectedObject.value = props.initialObject[props.valueAttribute]
+        selectedObjectName.value = props.initialObject[props.nameAttribute]
 })
 
 function selectObject(objectValue) {
@@ -91,6 +103,23 @@ function selectObject(objectValue) {
     selectedObjectName.value = obj[0][props.nameAttribute]
     openDropdown.value = false
 }
+
+const showText = ref('Select Item')
+watch(selectedObject, () => {
+    showText.value = getShowText(selectedObjectName.value, selectedObject.value)
+})
+
+
+function getShowText(name, value) {
+    if (typeof(value) == 'number'){
+        return `${name} (${value})`
+    }
+    else{
+        return `${name}`
+    }
+}
+    
+
 
 const focusedOnFilter = ref(false)
 
