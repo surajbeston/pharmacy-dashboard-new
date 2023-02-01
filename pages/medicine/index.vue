@@ -73,7 +73,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flex justify-end gap-5">
+                    <div class="flex justify-end gap-5 mt-5">
                         <Indication @changed="filterByIndications"></Indication>
                         <CountriesDropdown @selected-nation="filterByNationality"></CountriesDropdown>
                         <AsyncDropdown show-text="Manufacturer" method="post"

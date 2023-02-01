@@ -98,6 +98,11 @@ const pages = ref([
     'url': '/manufacturer'
   },
   {
+    'name': 'Generic Name',
+    'icon': 'manufacturer.png',
+    'url': '/generic-name'
+  },
+  {
     'name': 'Orders',
     'icon': 'manufacturer.png',
     'url': '/order'

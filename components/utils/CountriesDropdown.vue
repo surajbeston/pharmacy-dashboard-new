@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Dropdown show-text="Nation" :objects="countries" name-attribute="name" value-attribute="value"
+        <Dropdown show-text="Country" :objects="countries" name-attribute="name" value-attribute="value"
                         @selected-object="emitSelected"></Dropdown>
     </div>
 </template>

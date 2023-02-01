@@ -3,7 +3,6 @@
     <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
       <!-- history button  -->
       <div class="mb-8">
-
         <button style="display: block; height: 30px; padding: 0; width: 75px"
           class="ml-auto text-center text-indigo-400 font-bold rounded py-2 w-2/12 focus:outline-none bg-white-900 border-2 border-indigo-400">
           History
@@ -60,6 +59,13 @@
                     <input v-model="manufacturer.marketer_address" class="form-input w-full" type="text" required />
                   </div>
                 </div>
+                <div>
+                  <div>
+                    <label class="block text-sm font-medium mb-1" for="mandatory">Special Discount<span
+                        class="text-red-500"></span></label>
+                    <input v-model="manufacturer.special_discount" class="form-input w-full" type="number" required />
+                  </div>
+                </div>
                 <!-- End -->
               </div>
               <div>
@@ -73,7 +79,7 @@
               <div>
                 <!-- Start -->
                 <div>
-                  <label class="block text-sm font-medium mb-1" for="default">Nation of Origin:</label>
+                  <label class="block text-sm font-medium mb-1" for="default">Country:</label>
                   <CountriesDropdown @selected-nation="selectNationality"></CountriesDropdown>
                 </div>
                 <!-- End -->

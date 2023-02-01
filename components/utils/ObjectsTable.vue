@@ -7,7 +7,7 @@
                         <h2 class="font-semibold text-gray-800">{{ tableName }} </h2>
                         <Loader :loading="loading" class="ml-5"></Loader>
                     </div>
-                    <button 
+                    <button
                         class="btn border-gray-200 hover:border-gray-300 text-red-500 disabled:border-gray-200 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
                         :disabled="!enabledDeleteBtn" @click="initiateDelete()">
                         <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 16 16">
@@ -30,7 +30,8 @@
                                         </label>
                                     </div>
                                 </th>
-                                <th v-for="feature in features" :key="feature.name" class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <th v-for="feature in features" :key="feature.name"
+                                    class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                                     <div class="font-semibold text-left">{{ feature.name.replace("_", " ") }}</div>
                                 </th>
                             </tr>
@@ -46,7 +47,8 @@
                                         </label>
                                     </div>
                                 </td>
-                                <td v-for="feature in features" :key="feature" class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
+                                <td v-for="feature in features" :key="feature"
+                                    class="px-2 first:pl-5 last:pr-5 py-3 whitespace-nowrap">
                                     <div v-if="feature.type == 'key'" class="flex items-center text-gray-800">
                                         <a :href="feature.url.replace('__id__', object[feature.name])">
                                             <div
@@ -55,13 +57,15 @@
                                                     alt="Icon 01" />
                                             </div>
                                         </a>
-                                        <div class="font-medium text-blue-500"><a :href="feature.url.replace('__id__', object[feature.name])">
-                                                #<span>{{ object[feature.name] }}</span></a>
+                                        <div class="font-medium text-blue-500"><a
+                                                :href="feature.url.replace('__id__', object[feature.name])">
+                                                #<span>{{ shorten(object[feature.name]) }}</span></a>
                                         </div>
                                     </div>
-                                    <a v-else-if="feature.type == 'link'" :href="feature.url.replace('__id__', object[feature.link_id])"
+                                    <a v-else-if="feature.type == 'link'"
+                                        :href="feature.url.replace('__id__', object[feature.link_id])"
                                         class="font-medium text-gray-800 underline">{{ object[feature.name] }}</a>
-                                    <div v-else-if="feature.name == 'text'">
+                                    <div v-else-if="feature.type == 'text'">
                                         {{ object[feature.name] }}
                                     </div>
                                     <div v-else-if="feature.type == 'datetime'">
@@ -77,8 +81,10 @@
                     </table>
                 </div>
             </div>
-            <ConfirmDeleteModal :show-modal="showDeleteModal" delete-info="Deleting selected rows." delete-question="Are you sure you want to delete selected?" @cancelled="cancel" @deleted="deleteSelected" ></ConfirmDeleteModal>
-        </div> 
+            <ConfirmDeleteModal :show-modal="showDeleteModal" delete-info="Deleting selected rows."
+                delete-question="Are you sure you want to delete selected?" @cancelled="cancel"
+                @deleted="deleteSelected"></ConfirmDeleteModal>
+        </div>
     </div>
 </template>
 
@@ -92,18 +98,18 @@ const objects = ref([])
 
 var idFeature = null
 
-watch(() => props.features , () => {
+onMounted(() => {
     if (props.features) {
-        for (var feature of props.features) {
-            if (feature.type == 'id'){
-
-             idFeature = feature
-            }
-        }
-        throw Error("Id feature not passed in features literal object.")
+        var feature = props.features.filter((feature) => feature.type == 'key')
+        if (feature.length > 0) idFeature = feature[0]
     }
-    else{
-        throw Error("Features not passed in objects.")
+    
+})
+
+watch(() => props.features, () => {
+    console.log("inside watch", props.feature)
+    if (props.features) {
+        props.features.filter((feature) => feature.type == 'key')
     }
 })
 
@@ -120,6 +126,14 @@ watch(allSelected, (newVal) => {
     });
 })
 
+
+function shorten(text) {
+    if (typeof(text) == 'string'){
+        console.log(text)
+        return text.slice(0, 30)
+    }
+    return text
+}
 
 const enabledDeleteBtn = computed(() => {
     var anyOneEnabled = false
@@ -139,7 +153,7 @@ function initiateDelete() {
     showDeleteModal.value = true
 }
 
-function cancel(){
+function cancel() {
     showDeleteModal.value = false
 }
 
@@ -148,6 +162,8 @@ async function deleteSelected() {
     for (var object of objects.value) {
         if (object.selected) {
             console.log(idFeature)
+            console.log(object)
+            console.log(object[idFeature.name])
             await useBaseFetch(props.deleteUrl.replace('__id__', object[idFeature.name]), {
                 method: 'DELETE'
             })

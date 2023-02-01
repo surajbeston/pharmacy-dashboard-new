@@ -115,6 +115,8 @@ function onDelete() {
 
 async function completePurchase() {
     var response = await useBaseFetch(`/admin-api/meds/supplierorder/${supplierOrder.id}/complete_purchase/`)
+    const router = useRouter()
+    router.push(`/purchase/${response.id}`)
 }
 
 async function gotoPurchase() {

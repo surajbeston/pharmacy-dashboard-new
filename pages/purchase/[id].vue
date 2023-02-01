@@ -43,9 +43,13 @@
                                         <div class="max-w-[400px]">
                                             <label class="block text-sm font-medium mb-1" for="mandatory">Received
                                                 By</label>
-                                            <AsyncDropdown objects-url="/admin-api/meds/myuser/"
+                                            <AsyncDropdown v-if="purchaseLot.received_by" objects-url="/admin-api/meds/myuser/"
                                                 name-attribute="phone_number" value-attribute="id" method="get"
                                                 initial-text="9" :initial-object="purchaseLot.received_by" @selected-object="selectReceivedBy">
+                                            </AsyncDropdown>
+                                            <AsyncDropdown v-else objects-url="/admin-api/meds/myuser/"
+                                                name-attribute="phone_number" value-attribute="id" method="get"
+                                                initial-text="9" @selected-object="selectReceivedBy">
                                             </AsyncDropdown>
                                         </div>
                                     </div>
@@ -76,7 +80,6 @@
 import ConfirmDeleteModal from '~~/components/utils/ConfirmDeleteModal.vue';
 import Dropdown from '~~/components/utils/Dropdown.vue';
 import AsyncDropdown from '~~/components/utils/AsyncDropdown.vue';
-
 
 const { $bus } = useNuxtApp()
 const dropdownLoaded = ref(false)

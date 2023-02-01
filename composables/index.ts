@@ -32,11 +32,11 @@ export const useBaseFetch = (url: string, options = {}) => {
       fetching.value = false
     },
     onResponseError({ request, response, options }) {
+      if (response.status == 401) router.push("/signin")
       fetching.value = false
       var responseData = response._data
       var showTexts = []
       if (responseData) {
-        console.log(responseData)
         if (typeof (responseData) == 'object') {
           Object.keys(responseData).forEach((key) => {
             if (typeof (responseData[key]) == 'object') {
